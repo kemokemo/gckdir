@@ -11,42 +11,9 @@ import (
 	"github.com/urfave/cli"
 )
 
-var (
-	flags    = []cli.Flag{}
-	commands = []cli.Command{
-		{
-			Name:   "generate",
-			Action: CmdGenerate,
-			Flags:  []cli.Flag{},
-			OnUsageError: func(c *cli.Context, err error, isSubcommand bool) error {
-				fmt.Fprintf(c.App.Writer, "%v\nPlease check the usage below.\n\n%s\n", err, UsageTextGenarate)
-				return err
-			},
-		},
-		{
-			Name:   "compare",
-			Action: CmdCompare,
-			Flags:  []cli.Flag{},
-			OnUsageError: func(c *cli.Context, err error, isSubcommand bool) error {
-				fmt.Fprintf(c.App.Writer, "%v\nPlease check the usage below.\n\n%s\n", err, UsageTextCompare)
-				return err
-			},
-		},
-	}
-)
-
 func TestCmdGenerate(t *testing.T) {
-	app := cli.NewApp()
-	app.Flags = flags
-	app.Commands = commands
-
-	dir, err := os.Getwd()
-	if err != nil {
-		t.Errorf("Failed to get current directory path. %v", err)
-	}
-
 	flagPass := flag.FlagSet{}
-	err = flagPass.Parse(strings.Split(fmt.Sprintf("%s dir1.json", filepath.Join(dir, "TestData/Dir1")), " "))
+	err := flagPass.Parse(strings.Split(fmt.Sprintf("%s dir1.json", filepath.Join(dir, "TestData/Dir1")), " "))
 	if err != nil {
 		t.Errorf("Failed to create args. %v", err)
 	}

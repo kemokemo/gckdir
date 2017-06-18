@@ -3,7 +3,6 @@ package command
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 
@@ -27,7 +26,6 @@ This hash list includes hash values and recursive directory structure informatio
 func CmdGenerate(c *cli.Context) error {
 	source := c.Args().Get(0)
 	target := c.Args().Get(1)
-	log.Println("source and target", source, target)
 	if source == "" || target == "" {
 		return cli.NewExitError(strings.Join([]string{"source directory path or target json file path is empty\n\nUsage:\n", UsageTextGenarate}, ""), 10)
 	}
