@@ -19,7 +19,7 @@ var (
 			Action:    command.CmdGenerate,
 			Flags:     []cli.Flag{},
 			OnUsageError: func(c *cli.Context, err error, isSubcommand bool) error {
-				fmt.Fprintf(c.App.Writer, "%v\n\n%s\n", err, command.UsageTextGenarate)
+				fmt.Fprintf(c.App.Writer, "%v\nPlease check the usage below.\n\n%s\n", err, command.UsageTextGenarate)
 				return err
 			},
 		},
@@ -29,6 +29,10 @@ var (
 			Usage:   "",
 			Action:  command.CmdCompare,
 			Flags:   []cli.Flag{},
+			OnUsageError: func(c *cli.Context, err error, isSubcommand bool) error {
+				fmt.Fprintf(c.App.Writer, "%v\nPlease check the usage below.\n\n%s\n", err, command.UsageTextCompare)
+				return err
+			},
 		},
 	}
 )
