@@ -33,7 +33,7 @@ For more details, please see `gckdir compare --help`.
 **Appendix**
 
 ```bash
-gckdir compare hash_name.json path/to/target_directory --report
+$ gckdir compare hash_name.json path/to/target_directory --report
 ```
 
 You can create a comparison result report with `--report` option.
@@ -43,7 +43,7 @@ You can create a comparison result report with `--report` option.
 If you want to check the result immediately on the browser, please use the `--open` option with `--report` option.
 
 ```bash
-gckdir compare hash_name.json path/to/target_directory --report --open
+$ gckdir compare hash_name.json path/to/target_directory --report --open
 ```
 
 ## Install
