@@ -3,6 +3,7 @@ package lib
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"os"
@@ -27,8 +28,24 @@ type HashData struct {
 	Reason        string `json:"false_reason,omitempty"`
 }
 
+// GetHashList returns the hash list of source.
+// For source, a json file or a directory is supported.
+func GetHashList(source string) (HashList, error) {
+	source = filepath.Clean(source)
+	list := HashList{}
+	info, err := os.Stat(source)
+	if err != nil {
+		return list, err
+	}
+	if info.IsDir() {
+		return generateHashList(source)
+	}
+	return readHashList(source)
+}
+
 // GenerateHashList generates hash information of dir path.
-func GenerateHashList(dir string) (HashList, error) {
+func generateHashList(dir string) (HashList, error) {
+	dir = filepath.Clean(dir)
 	list := HashList{}
 	walk := func(path string, info os.FileInfo, err error) error {
 		// root path is not used.
@@ -66,6 +83,22 @@ func GenerateHashList(dir string) (HashList, error) {
 		return list, err
 	}
 
+	return list, nil
+}
+
+// ReadHashList reads source json file and return a hash list.
+func readHashList(source string) (HashList, error) {
+	list := HashList{}
+	source = filepath.Clean(source)
+	data, err := ioutil.ReadFile(source)
+	if err != nil {
+		return list, err
+	}
+
+	err = json.Unmarshal(data, &list)
+	if err != nil {
+		return list, err
+	}
 	return list, nil
 }
 
@@ -107,7 +140,7 @@ func compareWithSource(source, target HashList) HashList {
 				Reason:        message,
 			}
 			result.List = append(result.List, fail)
-			log.Printf(`"%s" does not exist.`, item.RelativePath)
+			log.Printf(`Required item does not exist. "%s"`, item.RelativePath)
 			continue
 		}
 
@@ -117,7 +150,7 @@ func compareWithSource(source, target HashList) HashList {
 		} else {
 			data.CompareResult = false
 			data.Reason = "Hash value does not match"
-			log.Printf(`Hash value of "%s" does not match.`, item.RelativePath)
+			log.Printf(`Hash value does not match. "%s"`, item.RelativePath)
 		}
 		result.List = append(result.List, data)
 	}
@@ -137,7 +170,7 @@ func compareWithTarget(result, target HashList) HashList {
 		if more == nil {
 			item.CompareResult = false
 			item.Reason = "Unnecessary item exists."
-			log.Printf(`Unnecessary item "%s" exists.`, item.RelativePath)
+			log.Printf(`Unnecessary item exists. "%s"`, item.RelativePath)
 			result.List = append(result.List, item)
 		}
 	}

@@ -40,7 +40,7 @@ func TestHashData(t *testing.T) {
 }
 
 func TestGenerateHashList(t *testing.T) {
-	list, err := GenerateHashList("TestData\\dir")
+	list, err := generateHashList("TestData\\dir")
 	if err != nil {
 		t.Errorf(`GenerateHashList("TestData\\dir") = %v, %q`, list, err)
 	}

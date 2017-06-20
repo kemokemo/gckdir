@@ -28,23 +28,24 @@ func CmdGenerate(c *cli.Context) error {
 	source := c.Args().Get(0)
 	target := c.Args().Get(1)
 	if source == "" || target == "" {
-		return cli.NewExitError(strings.Join([]string{"source path or target path is empty\n\nUsage:\n", UsageTextGenarate}, ""), 10)
+		return cli.NewExitError(strings.Join([]string{"source path or target path is empty\n\nUsage:\n", UsageTextGenarate}, ""), ExitCodeInvalidArguments)
 	}
+	source = filepath.Clean(source)
+	target = filepath.Clean(target)
 
-	list, err := lib.GenerateHashList(source)
+	list, err := lib.GetHashList(source)
 	if err != nil {
-		return cli.NewExitError(strings.Join([]string{"Failed to genarate hash list. ", err.Error()}, ""), 11)
+		return cli.NewExitError(strings.Join([]string{"Failed to genarate hash list. ", err.Error()}, ""), ExitCodeFunctionError)
 	}
 
 	data, err := json.MarshalIndent(list, "", "    ")
 	if err != nil {
-		return cli.NewExitError(strings.Join([]string{"Failed to marshal hash list. ", err.Error()}, ""), 12)
+		return cli.NewExitError(strings.Join([]string{"Failed to marshal hash list. ", err.Error()}, ""), ExitCodeFunctionError)
 	}
 
-	target = filepath.Clean(target)
 	err = ioutil.WriteFile(target, data, os.ModePerm)
 	if err != nil {
-		return cli.NewExitError(strings.Join([]string{"Failed to write hash list. ", err.Error()}, ""), 13)
+		return cli.NewExitError(strings.Join([]string{"Failed to write hash list. ", err.Error()}, ""), ExitCodeIOError)
 	}
 	return nil
 }

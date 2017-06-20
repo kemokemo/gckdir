@@ -43,7 +43,7 @@ func TestCmdCompare(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err = CmdCompare(tt.args.c); (err != nil) != tt.wantErr {
-				t.Errorf("CmdGenerate() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("CmdCompare() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

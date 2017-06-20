@@ -21,17 +21,20 @@ var (
 			UsageText: command.UsageTextGenarate,
 			Action:    command.CmdGenerate,
 			Flags:     []cli.Flag{},
+			ArgsUsage: "[source: a directory path] [target: a json file path]",
 			OnUsageError: func(c *cli.Context, err error, isSubcommand bool) error {
 				fmt.Fprintf(c.App.Writer, "%v\nPlease check the usage below.\n\n%s\n", err, command.UsageTextGenarate)
 				return err
 			},
 		},
 		{
-			Name:    "compare",
-			Aliases: []string{"com"},
-			Usage:   "",
-			Action:  command.CmdCompare,
-			Flags:   []cli.Flag{},
+			Name:      "compare",
+			Aliases:   []string{"com"},
+			Usage:     command.UsageCompare,
+			UsageText: command.UsageTextCompare,
+			Action:    command.CmdCompare,
+			Flags:     []cli.Flag{},
+			ArgsUsage: "[source: a json file path or a directory path] [target: a directory path]",
 			OnUsageError: func(c *cli.Context, err error, isSubcommand bool) error {
 				fmt.Fprintf(c.App.Writer, "%v\nPlease check the usage below.\n\n%s\n", err, command.UsageTextCompare)
 				return err

@@ -1,10 +1,9 @@
 package command
 
 import (
-	"encoding/json"
-	"io/ioutil"
+	"fmt"
 	"log"
-	"strings"
+	"path/filepath"
 
 	"github.com/kemokemo/gckdir/lib"
 	"github.com/urfave/cli"
@@ -12,7 +11,7 @@ import (
 
 var (
 	// UsageCompare is Usage of compare subcommand for cli
-	UsageCompare = "Generates a json file of the hash list"
+	UsageCompare = "Compares directory information"
 
 	// UsageTextCompare is UsageText of compare subcommand for cli
 	UsageTextCompare = `Compares directory information below cases.
@@ -31,31 +30,28 @@ func CmdCompare(c *cli.Context) error {
 	source := c.Args().Get(0)
 	target := c.Args().Get(1)
 	if source == "" || target == "" {
-		return cli.NewExitError(strings.Join([]string{"source path or target path is empty\n\nUsage:\n", UsageTextCompare}, ""), 20)
+		return cli.NewExitError(fmt.Sprintf("source path or target path is empty\n\nUsage:\n%s", UsageTextCompare), ExitCodeInvalidArguments)
 	}
+	source = filepath.Clean(source)
+	target = filepath.Clean(target)
 
-	// TODO: lib.ReadHashList(source)
-	data, err := ioutil.ReadFile(source)
+	sourceList, err := lib.GetHashList(source)
 	if err != nil {
-		return cli.NewExitError(strings.Join([]string{"Failed to read a json file.\n\nUsage:\n", UsageTextCompare}, ""), 21)
+		return cli.NewExitError(fmt.Sprintf("failed to get the hash list of '%s'.\n\nUsage:\n%s", source, UsageTextCompare), ExitCodeFunctionError)
 	}
 
-	sourceList := lib.HashList{}
-	err = json.Unmarshal(data, &sourceList)
+	targetList, err := lib.GetHashList(target)
 	if err != nil {
-		return cli.NewExitError(strings.Join([]string{"Failed to unmarshal.\n\nUsage:\n", UsageTextCompare}, ""), 21)
+		return cli.NewExitError(fmt.Sprintf("failed to get the hash list of '%s'.\n\nUsage:\n%s", target, UsageTextCompare), ExitCodeFunctionError)
 	}
 
-	targetList, err := lib.GenerateHashList(target)
-	if err != nil {
-		return cli.NewExitError(strings.Join([]string{"Failed to genarate hash info.\n\nUsage:\n", UsageTextCompare}, ""), 21)
-	}
-
+	log.Println("Source:", source)
+	log.Println("Target:", target)
 	result := lib.CompareHashList(sourceList, targetList)
 	if result.CompareResult {
-		log.Printf("Successfully compared.\n source:%s\n target:%s", source, target)
+		log.Println("The comparison was successful.")
 	} else {
-		log.Printf("Failed to compare.\n source:%s\n target:%s", source, target)
+		log.Println("The comparison failed.")
 	}
 	return nil
 }
