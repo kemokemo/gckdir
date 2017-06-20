@@ -2,10 +2,11 @@ package command
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/kemokemo/gckdir/lib"
 	"github.com/urfave/cli"
@@ -14,38 +15,42 @@ import (
 var (
 	// UsageGenerate is Usage of generate subcommand for cli
 	UsageGenerate = "Generates a json file of the hash list"
-
-	// UsageTextGenarate is UsageText of generate subcommand for cli
-	UsageTextGenarate = `Generates a json file of the hash list.
-This hash list includes hash values and recursive directory structure information.
- Usage: gckdir generate [directory path] [json file path or name]
-    ex) gckdir generate path/to/source source.json`
 )
 
 // CmdGenerate generates a json file of the hash list. This hash list
 // includes hash values and recursive directory structure information.
 func CmdGenerate(c *cli.Context) error {
+	help := fmt.Sprintf("Please see '%s %s --help'.", c.App.Name, c.Command.FullName())
 	source := c.Args().Get(0)
 	target := c.Args().Get(1)
 	if source == "" || target == "" {
-		return cli.NewExitError(strings.Join([]string{"source path or target path is empty\n\nUsage:\n", UsageTextGenarate}, ""), ExitCodeInvalidArguments)
+		return cli.NewExitError(
+			fmt.Sprintf("Source path or target path is empty. %s", help),
+			ExitCodeInvalidArguments)
 	}
 	source = filepath.Clean(source)
 	target = filepath.Clean(target)
 
 	list, err := lib.GetHashList(source)
 	if err != nil {
-		return cli.NewExitError(strings.Join([]string{"Failed to genarate hash list. ", err.Error()}, ""), ExitCodeFunctionError)
+		return cli.NewExitError(
+			fmt.Sprintf("Failed to genarate hash list. %v\n%s", err, help),
+			ExitCodeFunctionError)
 	}
 
 	data, err := json.MarshalIndent(list, "", "    ")
 	if err != nil {
-		return cli.NewExitError(strings.Join([]string{"Failed to marshal hash list. ", err.Error()}, ""), ExitCodeFunctionError)
+		return cli.NewExitError(
+			fmt.Sprintf("Failed to marshal hash list. %v\n%s", err, help),
+			ExitCodeFunctionError)
 	}
 
 	err = ioutil.WriteFile(target, data, os.ModePerm)
 	if err != nil {
-		return cli.NewExitError(strings.Join([]string{"Failed to write hash list. ", err.Error()}, ""), ExitCodeIOError)
+		return cli.NewExitError(
+			fmt.Sprintf("Failed to write hash list. %v\n%s", err, help),
+			ExitCodeIOError)
 	}
+	log.Println("Successfully generated hash list.")
 	return nil
 }

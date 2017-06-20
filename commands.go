@@ -18,25 +18,32 @@ var (
 			Name:      "generate",
 			Aliases:   []string{"gen"},
 			Usage:     command.UsageGenerate,
-			UsageText: command.UsageTextGenarate,
 			Action:    command.CmdGenerate,
 			Flags:     []cli.Flag{},
-			ArgsUsage: "[source: a directory path] [target: a json file path]",
+			ArgsUsage: "[source] [target]\n\t\tsource: a directory path\n\t\ttarget: a json file path",
 			OnUsageError: func(c *cli.Context, err error, isSubcommand bool) error {
-				fmt.Fprintf(c.App.Writer, "%v\nPlease check the usage below.\n\n%s\n", err, command.UsageTextGenarate)
+				fmt.Fprintf(c.App.Writer, "A ussage error occurred. Please see '%s %s --help'.\n", c.App.Name, c.Command.FullName())
 				return err
 			},
 		},
 		{
-			Name:      "compare",
-			Aliases:   []string{"com"},
-			Usage:     command.UsageCompare,
-			UsageText: command.UsageTextCompare,
-			Action:    command.CmdCompare,
-			Flags:     []cli.Flag{},
-			ArgsUsage: "[source: a json file path or a directory path] [target: a directory path]",
+			Name:    "compare",
+			Aliases: []string{"com"},
+			Usage:   command.UsageCompare,
+			Action:  command.CmdCompare,
+			Flags: []cli.Flag{
+				cli.BoolFlag{
+					Name:  "report",
+					Usage: "Create a result report in html format.",
+				},
+				cli.BoolFlag{
+					Name:  "open",
+					Usage: "Open the result report with the default browser. Please use with the 'report' option.",
+				},
+			},
+			ArgsUsage: "[source] [target]\n\t\tsource: a json file path or a directory path\n\t\ttarget: a directory path",
 			OnUsageError: func(c *cli.Context, err error, isSubcommand bool) error {
-				fmt.Fprintf(c.App.Writer, "%v\nPlease check the usage below.\n\n%s\n", err, command.UsageTextCompare)
+				fmt.Fprintf(c.App.Writer, "A ussage error occurred. Please see '%s %s --help'.\n", c.App.Name, c.Command.FullName())
 				return err
 			},
 		},

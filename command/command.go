@@ -11,6 +11,8 @@ const (
 	ExitCodeFunctionError
 	// ExitCodeInvalidArguments means that the arguments are invalid.
 	ExitCodeInvalidArguments
+	// ExitCodeInvalidOptions means that your inputed options are invalid.
+	ExitCodeInvalidOptions
 	// ExitCodeIOError means that this app cannot conplete any IO function.
 	ExitCodeIOError
 )

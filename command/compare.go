@@ -3,55 +3,103 @@ package command
 import (
 	"fmt"
 	"log"
+	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/kemokemo/gckdir/lib"
+	"github.com/skratchdot/open-golang/open"
 	"github.com/urfave/cli"
 )
 
 var (
 	// UsageCompare is Usage of compare subcommand for cli
 	UsageCompare = "Compares directory information"
-
-	// UsageTextCompare is UsageText of compare subcommand for cli
-	UsageTextCompare = `Compares directory information below cases.
- Case 1. a json file of hash list with target directory
- Case 2. source directory with target directory
-
- Usage: gckdir compare [source directory path or a json file path of hash list] [target directory]
-   ex1) gckdir compare path/to/source path/to/target
-	 ex2) gckdir compare hash.json path/to/target`
 )
 
 // CmdCompare comares directory information below cases.
 //  Case 1. a json file of hash list with target directory
 //  Case 2. source directory with target directory
 func CmdCompare(c *cli.Context) error {
+	help := fmt.Sprintf("Please see '%s %s --help'.", c.App.Name, c.Command.FullName())
 	source := c.Args().Get(0)
 	target := c.Args().Get(1)
 	if source == "" || target == "" {
-		return cli.NewExitError(fmt.Sprintf("source path or target path is empty\n\nUsage:\n%s", UsageTextCompare), ExitCodeInvalidArguments)
+		return cli.NewExitError(
+			fmt.Sprintf("Source path or target path is empty. %s", help),
+			ExitCodeInvalidArguments)
 	}
 	source = filepath.Clean(source)
 	target = filepath.Clean(target)
+	log.Println("Source:", source)
+	log.Println("Target:", target)
 
 	sourceList, err := lib.GetHashList(source)
 	if err != nil {
-		return cli.NewExitError(fmt.Sprintf("failed to get the hash list of '%s'.\n\nUsage:\n%s", source, UsageTextCompare), ExitCodeFunctionError)
+		return cli.NewExitError(
+			fmt.Sprintf("Failed to get the hash list. %v\n%s", err, help),
+			ExitCodeFunctionError)
 	}
 
 	targetList, err := lib.GetHashList(target)
 	if err != nil {
-		return cli.NewExitError(fmt.Sprintf("failed to get the hash list of '%s'.\n\nUsage:\n%s", target, UsageTextCompare), ExitCodeFunctionError)
+		return cli.NewExitError(
+			fmt.Sprintf("Failed to get the hash list. %v\n%s", err, help),
+			ExitCodeFunctionError)
 	}
 
-	log.Println("Source:", source)
-	log.Println("Target:", target)
 	result := lib.CompareHashList(sourceList, targetList)
 	if result.CompareResult {
-		log.Println("The comparison was successful.")
+		log.Println("This comparison was successful.")
 	} else {
-		log.Println("The comparison failed.")
+		log.Println("This comparison failed.")
+	}
+
+	var path string
+	if c.Bool("report") {
+		path, err = createReport(result)
+		if err != nil {
+			return cli.NewExitError(
+				fmt.Sprintf("Failed to create a result report. %v\n%s", err, help),
+				ExitCodeFunctionError)
+		}
+	}
+	if c.Bool("open") {
+		if c.Bool("report") == false {
+			return cli.NewExitError(
+				fmt.Sprintf("When you use the '--open' flag, please use '--report' flag too. %s", help),
+				ExitCodeInvalidOptions)
+		}
+		err = open.Run(path)
+		if err != nil {
+			return cli.NewExitError(
+				fmt.Sprintf("Failed to open a result report. %v\n%s", err, help),
+				ExitCodeFunctionError)
+		}
 	}
 	return nil
+}
+
+func createReport(result lib.HashList) (string, error) {
+	cd, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+	path := filepath.Join(cd, time.Now().Format("Result_20060102-030405.html"))
+
+	file, err := os.Create(path)
+	defer func() {
+		err = file.Close()
+		if err != nil {
+			log.Println("Failed to close file", err)
+		}
+	}()
+
+	err = lib.CreateReport(file, result)
+	if err != nil {
+		return "", err
+	}
+
+	path = filepath.Join("file:///", path)
+	return path, nil
 }

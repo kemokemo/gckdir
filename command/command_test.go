@@ -17,7 +17,7 @@ var (
 			Action: CmdGenerate,
 			Flags:  []cli.Flag{},
 			OnUsageError: func(c *cli.Context, err error, isSubcommand bool) error {
-				fmt.Fprintf(c.App.Writer, "%v\nPlease check the usage below.\n\n%s\n", err, UsageTextGenarate)
+				fmt.Fprintf(c.App.Writer, "A ussage error occurred. Please see '%s %s --help'.\n", c.App.Name, c.Command.FullName())
 				return err
 			},
 		},
@@ -26,7 +26,7 @@ var (
 			Action: CmdCompare,
 			Flags:  []cli.Flag{},
 			OnUsageError: func(c *cli.Context, err error, isSubcommand bool) error {
-				fmt.Fprintf(c.App.Writer, "%v\nPlease check the usage below.\n\n%s\n", err, UsageTextCompare)
+				fmt.Fprintf(c.App.Writer, "A ussage error occurred. Please see '%s %s --help'.\n", c.App.Name, c.Command.FullName())
 				return err
 			},
 		},
