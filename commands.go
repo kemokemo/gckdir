@@ -9,8 +9,11 @@ import (
 )
 
 var (
+	// GlobalFlags are global flag values
 	GlobalFlags = []cli.Flag{}
-	Commands    = []cli.Command{
+
+	// Commands are sub-commands of this app
+	Commands = []cli.Command{
 		{
 			Name:      "generate",
 			Aliases:   []string{"gen"},
@@ -37,7 +40,8 @@ var (
 	}
 )
 
-func CommandNotFound(c *cli.Context, command string) {
-	fmt.Fprintf(os.Stderr, "%s: '%s' is not a %s command. See '%s --help'.", c.App.Name, command, c.App.Name, c.App.Name)
-	os.Exit(2)
+// CommandNotFound will be executed when the user inputed sub-command is invalid.
+func CommandNotFound(c *cli.Context, subcommand string) {
+	fmt.Fprintf(os.Stderr, "%s: '%s' is not a %s command. See '%s --help'.\n", c.App.Name, subcommand, c.App.Name, c.App.Name)
+	os.Exit(command.ExitCodeCommandNotFound)
 }

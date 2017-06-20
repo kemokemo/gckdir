@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/kemokemo/gckdir/lib"
@@ -27,7 +28,7 @@ func CmdGenerate(c *cli.Context) error {
 	source := c.Args().Get(0)
 	target := c.Args().Get(1)
 	if source == "" || target == "" {
-		return cli.NewExitError(strings.Join([]string{"source directory path or target json file path is empty\n\nUsage:\n", UsageTextGenarate}, ""), 10)
+		return cli.NewExitError(strings.Join([]string{"source path or target path is empty\n\nUsage:\n", UsageTextGenarate}, ""), 10)
 	}
 
 	list, err := lib.GenerateHashList(source)
@@ -40,6 +41,7 @@ func CmdGenerate(c *cli.Context) error {
 		return cli.NewExitError(strings.Join([]string{"Failed to marshal hash list. ", err.Error()}, ""), 12)
 	}
 
+	target = filepath.Clean(target)
 	err = ioutil.WriteFile(target, data, os.ModePerm)
 	if err != nil {
 		return cli.NewExitError(strings.Join([]string{"Failed to write hash list. ", err.Error()}, ""), 13)

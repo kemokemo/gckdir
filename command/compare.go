@@ -1,6 +1,14 @@
 package command
 
-import "github.com/urfave/cli"
+import (
+	"encoding/json"
+	"io/ioutil"
+	"log"
+	"strings"
+
+	"github.com/kemokemo/gckdir/lib"
+	"github.com/urfave/cli"
+)
 
 var (
 	// UsageCompare is Usage of compare subcommand for cli
@@ -20,6 +28,34 @@ var (
 //  Case 1. a json file of hash list with target directory
 //  Case 2. source directory with target directory
 func CmdCompare(c *cli.Context) error {
-	// Write your code here
+	source := c.Args().Get(0)
+	target := c.Args().Get(1)
+	if source == "" || target == "" {
+		return cli.NewExitError(strings.Join([]string{"source path or target path is empty\n\nUsage:\n", UsageTextCompare}, ""), 20)
+	}
+
+	// TODO: lib.ReadHashList(source)
+	data, err := ioutil.ReadFile(source)
+	if err != nil {
+		return cli.NewExitError(strings.Join([]string{"Failed to read a json file.\n\nUsage:\n", UsageTextCompare}, ""), 21)
+	}
+
+	sourceList := lib.HashList{}
+	err = json.Unmarshal(data, &sourceList)
+	if err != nil {
+		return cli.NewExitError(strings.Join([]string{"Failed to unmarshal.\n\nUsage:\n", UsageTextCompare}, ""), 21)
+	}
+
+	targetList, err := lib.GenerateHashList(target)
+	if err != nil {
+		return cli.NewExitError(strings.Join([]string{"Failed to genarate hash info.\n\nUsage:\n", UsageTextCompare}, ""), 21)
+	}
+
+	result := lib.CompareHashList(sourceList, targetList)
+	if result.CompareResult {
+		log.Printf("Successfully compared.\n source:%s\n target:%s", source, target)
+	} else {
+		log.Printf("Failed to compare.\n source:%s\n target:%s", source, target)
+	}
 	return nil
 }

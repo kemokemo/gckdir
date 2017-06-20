@@ -67,48 +67,33 @@ func TestGenerateHashList(t *testing.T) {
 }
 
 func TestCompareHashList(t *testing.T) {
-	master := HashList{
-		List: []HashData{
-			HashData{RelativePath: "test.bmp", HashValue: "aaaa"},
-		}}
-	same := HashList{
-		List: []HashData{
-			HashData{RelativePath: "test.bmp", HashValue: "aaaa"},
-		}}
-	otherHash := HashList{
-		List: []HashData{
-			HashData{RelativePath: "test.bmp", HashValue: "bbbb"},
-		}}
-	otherPath := HashList{
-		List: []HashData{
-			HashData{RelativePath: "sample.txt", HashValue: "aaaa"},
-		}}
-	morePath := HashList{
-		List: []HashData{
-			HashData{RelativePath: "test.bmp", HashValue: "aaaa"},
-			HashData{RelativePath: "sample.txt", HashValue: "aaaa"},
-		}}
+	master := HashList{List: []HashData{HashData{RelativePath: "test.bmp", HashValue: "aaaa"}}}
+	same := HashList{List: []HashData{HashData{RelativePath: "test.bmp", HashValue: "aaaa"}}}
+	otherHash := HashList{List: []HashData{HashData{RelativePath: "test.bmp", HashValue: "bbbb"}}}
+	otherPath := HashList{List: []HashData{HashData{RelativePath: "sample.txt", HashValue: "aaaa"}}}
+	morePath := HashList{List: []HashData{
+		HashData{RelativePath: "test.bmp", HashValue: "aaaa"},
+		HashData{RelativePath: "sample.txt", HashValue: "aaaa"}}}
 
-	// same one
-	result := CompareHashList(same, master)
-	if result.CompareResult == false {
-		t.Errorf(`CompareHashList(same, master) = false`)
+	type args struct {
+		source HashList
+		target HashList
 	}
-
-	// other one
-	result = CompareHashList(otherHash, master)
-	if result.CompareResult == true {
-		t.Errorf(`CompareHashList(otherHash, master) = true`)
+	tests := []struct {
+		name       string
+		args       args
+		wantResult bool
+	}{
+		{name: "Test-SameOne", args: args{source: master, target: same}, wantResult: true},
+		{name: "Test-OtherOne1", args: args{source: master, target: otherHash}, wantResult: false},
+		{name: "Test-OtherOne2", args: args{source: master, target: otherPath}, wantResult: false},
+		{name: "Test-More", args: args{source: master, target: morePath}, wantResult: false},
 	}
-
-	result = CompareHashList(otherPath, master)
-	if result.CompareResult == true {
-		t.Errorf(`CompareHashList(otherPath, master) = true`)
-	}
-
-	// more
-	result = CompareHashList(morePath, master)
-	if result.CompareResult == true {
-		t.Errorf(`CompareHashList(morePath, master) = true`)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := CompareHashList(tt.args.source, tt.args.target); got.CompareResult != tt.wantResult {
+				t.Errorf("CompareHashList() = %v, want %v", got, tt.wantResult)
+			}
+		})
 	}
 }

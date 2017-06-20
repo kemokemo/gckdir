@@ -69,11 +69,11 @@ func GenerateHashList(dir string) (HashList, error) {
 	return list, nil
 }
 
-// CompareHashList compares List of current and master.
+// CompareHashList compares hash list of source and target.
 // Then, returns HashList that has CompareResult.
-func CompareHashList(current, master HashList) HashList {
-	result := compareWithMaster(current, master)
-	result = compareWithCurrent(current, result)
+func CompareHashList(source, target HashList) HashList {
+	result := compareWithSource(source, target)
+	result = compareWithTarget(result, target)
 	sort.Slice(result.List, func(i int, j int) bool {
 		return result.List[i].RelativePath < result.List[j].RelativePath
 	})
@@ -83,11 +83,11 @@ func CompareHashList(current, master HashList) HashList {
 	return result
 }
 
-func compareWithMaster(current, master HashList) HashList {
+func compareWithSource(source, target HashList) HashList {
 	result := HashList{CompareResult: false}
 
-	for _, item := range master.List {
-		selected := linq.From(current.List).
+	for _, item := range source.List {
+		selected := linq.From(target.List).
 			SingleWith(func(c interface{}) bool {
 				return c.(HashData).RelativePath == item.RelativePath
 			})
@@ -125,8 +125,10 @@ func compareWithMaster(current, master HashList) HashList {
 	return result
 }
 
-func compareWithCurrent(current, result HashList) HashList {
-	for _, item := range current.List {
+// compareWithTarget compares the result of comparison with the hash list
+// of the target directory to check wheather the unnecessary items exist.
+func compareWithTarget(result, target HashList) HashList {
+	for _, item := range target.List {
 		more := linq.From(result.List).
 			SingleWith(func(c interface{}) bool {
 				return c.(HashData).RelativePath == item.RelativePath
