@@ -56,7 +56,7 @@ func CmdCompare(c *cli.Context) error {
 	}
 
 	var path string
-	if c.Bool("report") {
+	if c.Bool("report") || c.Bool("open") {
 		path, err = createReport(result)
 		if err != nil {
 			return cli.NewExitError(
@@ -65,11 +65,6 @@ func CmdCompare(c *cli.Context) error {
 		}
 	}
 	if c.Bool("open") {
-		if c.Bool("report") == false {
-			return cli.NewExitError(
-				fmt.Sprintf("When you use the '--open' flag, please use '--report' flag too. %s", help),
-				ExitCodeInvalidOptions)
-		}
 		err = open.Run(path)
 		if err != nil {
 			return cli.NewExitError(

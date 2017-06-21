@@ -17,6 +17,12 @@ func TestCmdGenerate(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to create args. %v", err)
 	}
+	defer func() {
+		err = os.Remove("dir1.json")
+		if err != nil {
+			t.Errorf("Failed to remove dir1.json file. %v", err)
+		}
+	}()
 	flagFail1 := flag.FlagSet{}
 	err = flagFail1.Parse(strings.Split(fmt.Sprintf("%s", filepath.Join(dir, "TestData/Dir1")), " "))
 	if err != nil {
@@ -46,9 +52,5 @@ func TestCmdGenerate(t *testing.T) {
 				t.Errorf("CmdGenerate() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
-	}
-	err = os.Remove("dir1.json")
-	if err != nil {
-		t.Errorf("Failed to remove dir1.json file. %v", err)
 	}
 }

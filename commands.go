@@ -38,7 +38,7 @@ var (
 				},
 				cli.BoolFlag{
 					Name:  "open",
-					Usage: "Open the result report with the default browser. Please use with the 'report' option.",
+					Usage: "Open the result report with the default browser. This option includes the 'report' option.",
 				},
 			},
 			ArgsUsage: "[source] [target]\n\t\tsource: a json file path or a directory path\n\t\ttarget: a directory path",

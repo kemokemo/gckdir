@@ -1,6 +1,6 @@
 # gckdir
 
-This is go-check directory tool.
+This is go-check-directory tool.
 
 ## Description
 
@@ -30,21 +30,25 @@ $ gckdir compare path/to/source_directory path/to/target_directory
 
 For more details, please see `gckdir compare --help`.
 
-**Appendix**
+#### Create a result report
 
 ```bash
-$ gckdir compare hash_name.json path/to/target_directory --report
+$ gckdir compare --report hash_name.json path/to/target_directory
 ```
 
 You can create a comparison result report with `--report` option.
 
 ![comparison_report](./images/comparison_report.png)
 
-If you want to check the result immediately on the browser, please use the `--open` option with `--report` option.
+#### Create and open immediately a result report
 
 ```bash
-$ gckdir compare hash_name.json path/to/target_directory --report --open
+$ gckdir compare --open hash_name.json path/to/target_directory
 ```
+
+If you want to check the result immediately on the browser, please use the `--open` option. This option includes the `--report` option.
+
+![open_animation](./images/open_animation.gif)
 
 ## Install
 
