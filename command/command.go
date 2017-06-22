@@ -13,4 +13,6 @@ const (
 	ExitCodeInvalidArguments
 	// ExitCodeIOError means that this app cannot conplete any IO function.
 	ExitCodeIOError
+	// ExitCodeComparisonFailed means that the comaparison has ended with errors.
+	ExitCodeComparisonFailed
 )

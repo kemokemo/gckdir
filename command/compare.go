@@ -49,12 +49,6 @@ func CmdCompare(c *cli.Context) error {
 	}
 
 	result := lib.CompareHashList(sourceList, targetList)
-	if result.CompareResult {
-		log.Println("This comparison was successful.")
-	} else {
-		log.Println("This comparison failed.")
-	}
-
 	var path string
 	if c.Bool("report") || c.Bool("open") {
 		path, err = createReport(result)
@@ -71,6 +65,13 @@ func CmdCompare(c *cli.Context) error {
 				fmt.Sprintf("Failed to open a result report. %v\n%s", err, help),
 				ExitCodeFunctionError)
 		}
+	}
+
+	if result.CompareResult {
+		log.Println("This comparison was successful.")
+	} else {
+		log.Println("This comparison failed.")
+		return cli.NewExitError("", ExitCodeComparisonFailed)
 	}
 	return nil
 }

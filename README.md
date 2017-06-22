@@ -50,6 +50,12 @@ If you want to check the result immediately on the browser, please use the `--op
 
 ![open_animation](./images/open_animation.gif)
 
+## ExitCode
+
+ExitCode returns with 0 if all processing is successful.  
+When a problem occurs, an integer of 1 or more is returned as ExitCode.  
+Even when the comparison result is Fail, an integer of 1 or more is returned as ExitCode.
+
 ## Install
 
 To install, use `go get`:
