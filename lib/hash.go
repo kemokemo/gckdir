@@ -14,18 +14,24 @@ import (
 	"github.com/ahmetb/go-linq"
 )
 
-// HashList is list of HashData struct
+// PathList is a list of paths
+type PathList struct {
+	SourcePath string
+	TargetPath string
+}
+
+// HashList is a list of HashData struct
 type HashList struct {
-	List          []HashData `json:"hash_list"`
-	CompareResult bool       `json:"comp_result,omitempty"`
+	List         []HashData `json:"hash_list"`
+	VerifyResult bool       `json:"verify_result,omitempty"`
 }
 
 // HashData is hash value and file name struct
 type HashData struct {
-	RelativePath  string `json:"relative_path"`
-	HashValue     string `json:"hash_value"`
-	CompareResult bool   `json:"comp_result,omitempty"`
-	Reason        string `json:"false_reason,omitempty"`
+	RelativePath string `json:"relative_path"`
+	HashValue    string `json:"hash_value"`
+	VerifyResult bool   `json:"verify_result,omitempty"`
+	Reason       string `json:"reason_of_failed,omitempty"`
 }
 
 // GetHashList returns the hash list of source.
@@ -102,22 +108,22 @@ func readHashList(source string) (HashList, error) {
 	return list, nil
 }
 
-// CompareHashList compares hash list of source and target.
-// Then, returns HashList that has CompareResult.
-func CompareHashList(source, target HashList) HashList {
-	result := compareWithSource(source, target)
-	result = compareWithTarget(result, target)
+// VerifyHashList verifies hash list of source and target.
+// Then, returns HashList that has VerifyResult.
+func VerifyHashList(source, target HashList) HashList {
+	result := verifyWithSource(source, target)
+	result = verifyWithTarget(result, target)
 	sort.Slice(result.List, func(i int, j int) bool {
 		return result.List[i].RelativePath < result.List[j].RelativePath
 	})
-	result.CompareResult = linq.From(result.List).All(func(arg1 interface{}) bool {
-		return arg1.(HashData).CompareResult == true
+	result.VerifyResult = linq.From(result.List).All(func(arg1 interface{}) bool {
+		return arg1.(HashData).VerifyResult == true
 	})
 	return result
 }
 
-func compareWithSource(source, target HashList) HashList {
-	result := HashList{CompareResult: false}
+func verifyWithSource(source, target HashList) HashList {
+	result := HashList{VerifyResult: false}
 
 	for _, item := range source.List {
 		selected := linq.From(target.List).
@@ -134,10 +140,10 @@ func compareWithSource(source, target HashList) HashList {
 			}
 
 			fail := HashData{
-				RelativePath:  item.RelativePath,
-				HashValue:     item.HashValue,
-				CompareResult: false,
-				Reason:        message,
+				RelativePath: item.RelativePath,
+				HashValue:    item.HashValue,
+				VerifyResult: false,
+				Reason:       message,
 			}
 			result.List = append(result.List, fail)
 			log.Printf(`Required item does not exist. "%s"`, item.RelativePath)
@@ -146,9 +152,9 @@ func compareWithSource(source, target HashList) HashList {
 
 		data := selected.(HashData)
 		if data.HashValue == item.HashValue {
-			data.CompareResult = true
+			data.VerifyResult = true
 		} else {
-			data.CompareResult = false
+			data.VerifyResult = false
 			data.Reason = "Hash value does not match"
 			log.Printf(`Hash value does not match. "%s"`, item.RelativePath)
 		}
@@ -158,9 +164,9 @@ func compareWithSource(source, target HashList) HashList {
 	return result
 }
 
-// compareWithTarget compares the result of comparison with the hash list
+// verifyWithTarget verifies the result of verification with the hash list
 // of the target directory to check wheather the unnecessary items exist.
-func compareWithTarget(result, target HashList) HashList {
+func verifyWithTarget(result, target HashList) HashList {
 	for _, item := range target.List {
 		more := linq.From(result.List).
 			SingleWith(func(c interface{}) bool {
@@ -168,7 +174,7 @@ func compareWithTarget(result, target HashList) HashList {
 			})
 
 		if more == nil {
-			item.CompareResult = false
+			item.VerifyResult = false
 			item.Reason = "Unnecessary item exists."
 			log.Printf(`Unnecessary item exists. "%s"`, item.RelativePath)
 			result.List = append(result.List, item)

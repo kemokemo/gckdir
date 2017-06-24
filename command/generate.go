@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 
@@ -51,6 +50,5 @@ func CmdGenerate(c *cli.Context) error {
 			fmt.Sprintf("Failed to write hash list. %v\n%s", err, help),
 			ExitCodeIOError)
 	}
-	log.Println("Successfully generated hash list.")
 	return nil
 }

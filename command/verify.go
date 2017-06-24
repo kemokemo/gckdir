@@ -13,14 +13,14 @@ import (
 )
 
 var (
-	// UsageCompare is Usage of compare subcommand for cli
-	UsageCompare = "Compares directory information"
+	// UsageVerify is Usage of verify subcommand for cli
+	UsageVerify = "Verifies the structure and each hash value of files."
 )
 
-// CmdCompare comares directory information below cases.
+// CmdVerify verifies directory information below cases.
 //  Case 1. a json file of hash list with target directory
 //  Case 2. source directory with target directory
-func CmdCompare(c *cli.Context) error {
+func CmdVerify(c *cli.Context) error {
 	help := fmt.Sprintf("Please see '%s %s --help'.", c.App.Name, c.Command.FullName())
 	source := c.Args().Get(0)
 	target := c.Args().Get(1)
@@ -31,8 +31,6 @@ func CmdCompare(c *cli.Context) error {
 	}
 	source = filepath.Clean(source)
 	target = filepath.Clean(target)
-	log.Println("Source:", source)
-	log.Println("Target:", target)
 
 	sourceList, err := lib.GetHashList(source)
 	if err != nil {
@@ -40,7 +38,6 @@ func CmdCompare(c *cli.Context) error {
 			fmt.Sprintf("Failed to get the hash list. %v\n%s", err, help),
 			ExitCodeFunctionError)
 	}
-
 	targetList, err := lib.GetHashList(target)
 	if err != nil {
 		return cli.NewExitError(
@@ -48,10 +45,11 @@ func CmdCompare(c *cli.Context) error {
 			ExitCodeFunctionError)
 	}
 
-	result := lib.CompareHashList(sourceList, targetList)
+	result := lib.VerifyHashList(sourceList, targetList)
 	var path string
 	if c.Bool("report") || c.Bool("open") {
-		path, err = createReport(result)
+		pathList := lib.PathList{SourcePath: source, TargetPath: target}
+		path, err = createReport(pathList, result)
 		if err != nil {
 			return cli.NewExitError(
 				fmt.Sprintf("Failed to create a result report. %v\n%s", err, help),
@@ -67,16 +65,14 @@ func CmdCompare(c *cli.Context) error {
 		}
 	}
 
-	if result.CompareResult {
-		log.Println("This comparison was successful.")
-	} else {
-		log.Println("This comparison failed.")
-		return cli.NewExitError("", ExitCodeComparisonFailed)
+	if result.VerifyResult == false {
+		log.Println("Verification failed.")
+		return cli.NewExitError("", ExitCodeVerificationFailed)
 	}
 	return nil
 }
 
-func createReport(result lib.HashList) (string, error) {
+func createReport(pathList lib.PathList, result lib.HashList) (string, error) {
 	cd, err := os.Getwd()
 	if err != nil {
 		return "", err
@@ -91,7 +87,7 @@ func createReport(result lib.HashList) (string, error) {
 		}
 	}()
 
-	err = lib.CreateReport(file, result)
+	err = lib.CreateReport(file, pathList, result)
 	if err != nil {
 		return "", err
 	}

@@ -7,7 +7,7 @@ import (
 
 // CreateReport creates html report from HashList and
 // saves html file to io.Writer w.
-func CreateReport(w io.Writer, result HashList) error {
+func CreateReport(w io.Writer, pathList PathList, result HashList) error {
 	report := template.New("report")
 	b, err := Asset("lib/templates/index.html")
 	if err != nil {
@@ -25,7 +25,14 @@ func CreateReport(w io.Writer, result HashList) error {
 		return err
 	}
 
-	err = report.Execute(w, result)
+	values := struct {
+		PathList PathList
+		Result   HashList
+	}{
+		PathList: pathList,
+		Result:   result,
+	}
+	err = report.Execute(w, values)
 	if err != nil {
 		return err
 	}

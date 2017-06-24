@@ -4,8 +4,8 @@ This is go-check-directory tool.
 
 ## Description
 
-You can generate a hash list of specified directory in the json format.  
-With the hash list, you can compare the target directory's structure and each hash value
+This tool can generate a hash list of specified directory in the json format.  
+With the hash list, you can verify the target directory's structure and each hash value
 of files.
 
 ## Usage
@@ -18,32 +18,32 @@ $ gckdir generate path/to/source_directory hash_name.json
 
 For more details, please see `gckdir generate --help`.
 
-### Compare
+### Verify
 
 ```bash
-$ gckdir compare hash_name.json path/to/target_directory
+$ gckdir verify hash_name.json path/to/target_directory
 ```
 or
 ```bash
-$ gckdir compare path/to/source_directory path/to/target_directory
+$ gckdir verify path/to/source_directory path/to/target_directory
 ```
 
-For more details, please see `gckdir compare --help`.
+For more details, please see `gckdir verify --help`.
 
 #### Create a result report
 
 ```bash
-$ gckdir compare --report hash_name.json path/to/target_directory
+$ gckdir verify --report hash_name.json path/to/target_directory
 ```
 
-You can create a comparison result report with `--report` option.
+You can create a verification result report with `--report` option.
 
-![comparison_report](./images/comparison_report.png)
+![verification_report](./images/verification_report.png)
 
 #### Create and open immediately a result report
 
 ```bash
-$ gckdir compare --open hash_name.json path/to/target_directory
+$ gckdir verify --open hash_name.json path/to/target_directory
 ```
 
 If you want to check the result immediately on the browser, please use the `--open` option. This option includes the `--report` option.

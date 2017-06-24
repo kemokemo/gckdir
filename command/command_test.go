@@ -22,8 +22,8 @@ var (
 			},
 		},
 		{
-			Name:   "compare",
-			Action: CmdCompare,
+			Name:   "verify",
+			Action: CmdVerify,
 			Flags:  []cli.Flag{},
 			OnUsageError: func(c *cli.Context, err error, isSubcommand bool) error {
 				fmt.Fprintf(c.App.Writer, "A ussage error occurred. Please see '%s %s --help'.\n", c.App.Name, c.Command.FullName())

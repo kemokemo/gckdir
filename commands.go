@@ -27,10 +27,10 @@ var (
 			},
 		},
 		{
-			Name:    "compare",
-			Aliases: []string{"com"},
-			Usage:   command.UsageCompare,
-			Action:  command.CmdCompare,
+			Name:    "verify",
+			Aliases: []string{"ver"},
+			Usage:   command.UsageVerify,
+			Action:  command.CmdVerify,
 			Flags: []cli.Flag{
 				cli.BoolFlag{
 					Name:  "report",
@@ -38,7 +38,7 @@ var (
 				},
 				cli.BoolFlag{
 					Name:  "open",
-					Usage: "Open the result report with the default browser. This option includes the 'report' option.",
+					Usage: "Create and open a result report with the default browser. This option includes the 'report' option.",
 				},
 			},
 			ArgsUsage: "[source] [target]\n\t\tsource: a json file path or a directory path\n\t\ttarget: a directory path",

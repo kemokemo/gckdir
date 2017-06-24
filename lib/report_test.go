@@ -17,7 +17,7 @@ func Test_passFail(t *testing.T) {
 		want string
 	}{
 		{name: "PassCase", args: args{result: true}, want: "Pass"},
-		{name: "FaileCase", args: args{result: false}, want: "Fail"},
+		{name: "FailCase", args: args{result: false}, want: "Fail"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -51,12 +51,13 @@ func Test_rowAttr(t *testing.T) {
 
 func TestCreateReport(t *testing.T) {
 	validResult := HashList{
-		CompareResult: true,
+		VerifyResult: true,
 		List: []HashData{
-			HashData{RelativePath: "test.bmp", HashValue: "bbbb", CompareResult: true, Reason: ""},
+			HashData{RelativePath: "test.bmp", HashValue: "bbbb", VerifyResult: true, Reason: ""},
 		}}
 
 	type args struct {
+		paths  PathList
 		result HashList
 	}
 	tests := []struct {
@@ -64,12 +65,12 @@ func TestCreateReport(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		{name: "ValidReport", args: args{result: validResult}, wantErr: false},
+		{name: "ValidReport", args: args{result: validResult, paths: PathList{"", ""}}, wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			w := &bytes.Buffer{}
-			if err := CreateReport(w, tt.args.result); (err != nil) != tt.wantErr {
+			if err := CreateReport(w, tt.args.paths, tt.args.result); (err != nil) != tt.wantErr {
 				t.Errorf("CreateReport() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}

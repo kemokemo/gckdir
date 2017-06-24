@@ -3,6 +3,8 @@ package command
 const (
 	// ExitCodeOK means that this app successfully finished to run.
 	ExitCodeOK int = iota
+	// ExitCodeVerificationFailed means that the Verification has ended with errors.
+	ExitCodeVerificationFailed
 	// ExitCodeFailed means that this app failed to run. Please check the error message.
 	ExitCodeFailed
 	// ExitCodeCommandNotFound means that your inputed sub-command is invalid.
@@ -13,6 +15,4 @@ const (
 	ExitCodeInvalidArguments
 	// ExitCodeIOError means that this app cannot conplete any IO function.
 	ExitCodeIOError
-	// ExitCodeComparisonFailed means that the comaparison has ended with errors.
-	ExitCodeComparisonFailed
 )

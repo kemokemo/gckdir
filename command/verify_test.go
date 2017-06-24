@@ -10,7 +10,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-func TestCmdCompare(t *testing.T) {
+func TestCmdVerify(t *testing.T) {
 	flagPass := flag.FlagSet{}
 	err := flagPass.Parse(strings.Split(
 		fmt.Sprintf("%s %s", filepath.Join(dir, "TestData/dir1.json"), filepath.Join(dir, "TestData/Dir1")), " "))
@@ -42,8 +42,8 @@ func TestCmdCompare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err = CmdCompare(tt.args.c); (err != nil) != tt.wantErr {
-				t.Errorf("CmdCompare() error = %v, wantErr %v", err, tt.wantErr)
+			if err = CmdVerify(tt.args.c); (err != nil) != tt.wantErr {
+				t.Errorf("CmdVerify() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

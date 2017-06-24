@@ -13,7 +13,7 @@ func TestHashData(t *testing.T) {
 		want HashData
 	}{
 		{"TestData\\HashData\\result_empty.json", HashData{RelativePath: "aaa.txt", HashValue: "aaaa"}},
-		{"TestData\\HashData\\result_true.json", HashData{RelativePath: "bbb.txt", HashValue: "1234", CompareResult: true}},
+		{"TestData\\HashData\\result_true.json", HashData{RelativePath: "bbb.txt", HashValue: "1234", VerifyResult: true}},
 	}
 
 	for _, test := range tests {
@@ -66,7 +66,7 @@ func TestGenerateHashList(t *testing.T) {
 	}
 }
 
-func TestCompareHashList(t *testing.T) {
+func TestVerifyHashList(t *testing.T) {
 	master := HashList{List: []HashData{HashData{RelativePath: "test.bmp", HashValue: "aaaa"}}}
 	same := HashList{List: []HashData{HashData{RelativePath: "test.bmp", HashValue: "aaaa"}}}
 	otherHash := HashList{List: []HashData{HashData{RelativePath: "test.bmp", HashValue: "bbbb"}}}
@@ -91,8 +91,8 @@ func TestCompareHashList(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := CompareHashList(tt.args.source, tt.args.target); got.CompareResult != tt.wantResult {
-				t.Errorf("CompareHashList() = %v, want %v", got, tt.wantResult)
+			if got := VerifyHashList(tt.args.source, tt.args.target); got.VerifyResult != tt.wantResult {
+				t.Errorf("VerifyHashList() = %v, want %v", got, tt.wantResult)
 			}
 		})
 	}

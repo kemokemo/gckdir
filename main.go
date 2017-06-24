@@ -18,7 +18,7 @@ func run(args []string) int {
 	app.Version = Version
 	app.Author = "KemoKemo"
 	app.Email = "t2wonderland@gmail.com"
-	app.Usage = "generate a hash list of a directory and compare the hash list and a target directory."
+	app.Usage = "generate a hash list of a correct directory and verify the target directory's structure and each hash value of files."
 
 	app.Flags = GlobalFlags
 	app.Commands = Commands
