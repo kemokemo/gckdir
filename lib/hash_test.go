@@ -3,6 +3,7 @@ package lib
 import (
 	"encoding/json"
 	"io/ioutil"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -12,8 +13,8 @@ func TestHashData(t *testing.T) {
 		file string
 		want HashData
 	}{
-		{"TestData\\HashData\\result_empty.json", HashData{RelativePath: "aaa.txt", HashValue: "aaaa"}},
-		{"TestData\\HashData\\result_true.json", HashData{RelativePath: "bbb.txt", HashValue: "1234", VerifyResult: true}},
+		{filepath.Join("TestData", "HashData", "result_empty.json"), HashData{RelativePath: "aaa.txt", HashValue: "aaaa"}},
+		{filepath.Join("TestData", "HashData", "result_true.json"), HashData{RelativePath: "bbb.txt", HashValue: "1234", VerifyResult: true}},
 	}
 
 	for _, test := range tests {
@@ -40,9 +41,9 @@ func TestHashData(t *testing.T) {
 }
 
 func TestGenerateHashList(t *testing.T) {
-	list, err := generateHashList("TestData\\dir")
+	list, err := generateHashList(filepath.Join("TestData", "dir"))
 	if err != nil {
-		t.Errorf(`GenerateHashList("TestData\\dir") = %v, %q`, list, err)
+		t.Errorf(`GenerateHashList(filepath.Join("TestData", "dir")) = %v, %q`, list, err)
 	}
 
 	count := len(list.List)
