@@ -1,0 +1,31 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "neQBge+hdMKkQiOT3Y+4P9FTGOs=",
+			"path": "github.com/ahmetb/go-linq",
+			"revision": "67424dce7b47e42b7f2373557878fd6e3f2d8c44",
+			"revisionTime": "2017-02-26T20:32:25Z"
+		},
+		{
+			"checksumSHA1": "po6iFcsW97V5vOChVqS7PThKLmY=",
+			"path": "github.com/KemoKemo/gckdir/lib",
+			"revision": "039801852cbeaf524aafcc782cf14db8d60c6f08",
+			"revisionTime": "2017-06-24T00:39:14Z"
+		},
+		{
+			"checksumSHA1": "h/HMhokbQHTdLUbruoBBTee+NYw=",
+			"path": "github.com/skratchdot/open-golang/open",
+			"revision": "75fb7ed4208cf72d323d7d02fd1a5964a7a9073c",
+			"revisionTime": "2016-03-02T14:40:31Z"
+		},
+		{
+			"checksumSHA1": "lus29xeARKSKWgpA5UPegnYCSEI=",
+			"path": "github.com/urfave/cli",
+			"revision": "cf33a9befefdd6c6ea1a236ab6d546e797a62cbf",
+			"revisionTime": "2017-06-12T00:00:38Z"
+		}
+	],
+	"rootPath": "github.com/KemoKemo/gckdir"
+}

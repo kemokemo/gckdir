@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/kemokemo/gckdir/lib"
+	"github.com/KemoKemo/gckdir/lib"
 	"github.com/skratchdot/open-golang/open"
 	"github.com/urfave/cli"
 )

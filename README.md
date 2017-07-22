@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/KemoKemo/gckdir.svg?branch=master)](https://travis-ci.org/KemoKemo/gckdir) [![Coverage Status](https://coveralls.io/repos/github/KemoKemo/gckdir/badge.svg?branch=master)](https://coveralls.io/github/KemoKemo/gckdir?branch=master)
+
 # gckdir
 
 This is go-check-directory tool.
