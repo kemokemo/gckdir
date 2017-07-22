@@ -1,0 +1,19 @@
+# Build customization
+builds:
+  - main: main.go version.go commands.go
+    binary: gckdir
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+# Archive customization
+archive:
+  format: tar.gz
+  replacements:
+    amd64: x64
+    darwin: macOS
+  files:
+    - LICENSE
+    - README.md
