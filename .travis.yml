@@ -8,3 +8,5 @@ before_install:
 script:
   - govendor sync
   - $HOME/gopath/bin/goveralls -service=travis-ci
+after_success:
+  - test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash
