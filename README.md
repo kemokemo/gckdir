@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/KemoKemo/gckdir.svg?branch=master)](https://travis-ci.org/KemoKemo/gckdir) [![Coverage Status](https://coveralls.io/repos/github/KemoKemo/gckdir/badge.svg?branch=master)](https://coveralls.io/github/KemoKemo/gckdir?branch=master)
+[![Build Status](https://travis-ci.org/KemoKemo/gckdir.svg?branch=master)](https://travis-ci.org/KemoKemo/gckdir) [![Coverage Status](https://coveralls.io/repos/github/KemoKemo/gckdir/badge.svg?branch=master)](https://coveralls.io/github/KemoKemo/gckdir?branch=master) [![Go Report Card](https://goreportcard.com/badge/github.com/KemoKemo/gckdir)](https://goreportcard.com/report/github.com/KemoKemo/gckdir) [![Powered By: GoReleaser](https://img.shields.io/badge/powered%20by-goreleaser-green.svg?style=flat-square)](https://github.com/goreleaser)
 
 # gckdir
 
