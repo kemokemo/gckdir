@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 
 	"github.com/ahmetb/go-linq"
 )
@@ -51,42 +52,65 @@ func GetHashList(source string) (HashList, error) {
 
 // GenerateHashList generates hash information of dir path.
 func generateHashList(dir string) (HashList, error) {
+	type result struct {
+		Data  HashData
+		Error error
+	}
+
 	dir = filepath.Clean(dir)
 	list := HashList{}
-	walk := func(path string, info os.FileInfo, err error) error {
+	c := make(chan result)
+	var wg sync.WaitGroup
+	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		// root path is not used.
 		if strings.Compare(dir, path) == 0 {
 			return nil
 		}
 
-		rel, err := filepath.Rel(dir, path)
-		if err != nil {
-			log.Println("Get relative path error.", err)
-			return err
-		}
-		data := HashData{}
-		data.RelativePath = rel
-
-		if info.IsDir() {
-			// directories do not have hash value
-			data.HashValue = "-"
-		} else {
-			bytes, err := ioutil.ReadFile(path)
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			data := HashData{}
+			rel, err := filepath.Rel(dir, path)
 			if err != nil {
-				log.Println("ReadFile error.", err)
-				return err
+				log.Println("Get relative path error.", err)
+				c <- result{Data: data, Error: err}
+				return
 			}
-			hash := sha256.Sum256(bytes)
-			data.HashValue = hex.EncodeToString(hash[:])
-		}
 
-		list.List = append(list.List, data)
+			data.RelativePath = rel
+
+			if info.IsDir() {
+				// directories do not have hash value
+				data.HashValue = "-"
+			} else {
+				bytes, err := ioutil.ReadFile(path)
+				if err != nil {
+					log.Println("ReadFile error.", err)
+					c <- result{Data: data, Error: err}
+					return
+				}
+				hash := sha256.Sum256(bytes)
+				data.HashValue = hex.EncodeToString(hash[:])
+				c <- result{Data: data, Error: nil}
+			}
+		}()
 		return nil
-	}
-
-	err := filepath.Walk(dir, walk)
+	})
 	if err != nil {
 		return list, err
+	}
+
+	go func() {
+		wg.Wait()
+		close(c)
+	}()
+
+	for r := range c {
+		if r.Error != nil {
+			log.Println(err)
+		}
+		list.List = append(list.List, r.Data)
 	}
 
 	return list, nil
