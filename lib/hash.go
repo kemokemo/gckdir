@@ -134,8 +134,8 @@ func readHashList(source string) (HashList, error) {
 
 // VerifyHashList verifies hash list of source and target.
 // Then, returns HashList that has VerifyResult.
-func VerifyHashList(source, target HashList) HashList {
-	result := verifyWithSource(source, target)
+func VerifyHashList(source, target HashList, doHashCheck bool) HashList {
+	result := verifyWithSource(source, target, doHashCheck)
 	result = verifyWithTarget(result, target)
 	sort.Slice(result.List, func(i int, j int) bool {
 		return result.List[i].RelativePath < result.List[j].RelativePath
@@ -146,7 +146,7 @@ func VerifyHashList(source, target HashList) HashList {
 	return result
 }
 
-func verifyWithSource(source, target HashList) HashList {
+func verifyWithSource(source, target HashList, doHashCheck bool) HashList {
 	result := HashList{VerifyResult: false}
 
 	for _, item := range source.List {
@@ -178,9 +178,14 @@ func verifyWithSource(source, target HashList) HashList {
 		if data.HashValue == item.HashValue {
 			data.VerifyResult = true
 		} else {
-			data.VerifyResult = false
-			data.Reason = "Hash value does not match"
-			log.Printf(`Hash value does not match. "%s"`, item.RelativePath)
+			if doHashCheck {
+				data.VerifyResult = false
+				data.Reason = "Hash value does not match"
+				log.Printf(`Hash value does not match. "%s"`, item.RelativePath)
+			} else {
+				data.VerifyResult = true
+				data.Reason = "Ignore that the hash values do not match"
+			}
 		}
 		result.List = append(result.List, data)
 	}

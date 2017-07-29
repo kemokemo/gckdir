@@ -40,6 +40,10 @@ var (
 					Name:  "open",
 					Usage: "Create and open a result report with the default browser. This option includes the 'report' option.",
 				},
+				cli.BoolFlag{
+					Name:  "no-hv",
+					Usage: "Verify only the file and directory structure. Ignore the each hash value of files.",
+				},
 			},
 			ArgsUsage: "[source] [target]\n\t\tsource: a json file path or a directory path\n\t\ttarget: a directory path",
 			OnUsageError: func(c *cli.Context, err error, isSubcommand bool) error {
