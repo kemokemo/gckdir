@@ -52,6 +52,14 @@ If you want to check the result immediately on the browser, please use the `--op
 
 ![open_animation](./images/open_animation.gif)
 
+#### Verify only the structure of files and directories
+
+```bash
+$ gckdir verify --no-hv hash_name.json path/to/target_directory
+```
+
+Please specify this option if you only want to check if files and directories are arranged with the intended structure and ignore the difference in hash value. This option can be used with --open or --report.
+
 ## ExitCode
 
 ExitCode returns with 0 if all processing is successful.  
@@ -60,13 +68,16 @@ Even when the comparison result is Fail, an integer of 1 or more is returned as 
 
 ## Install
 
-To install, use `go get`:
+Please download the one suitable for your platform from [the latest release page](https://github.com/KemoKemo/gckdir/releases/latest).  
+To get the latest source code, use `go get`:
 
 ```bash
 $ go get -d github.com/KemoKemo/gckdir
 ```
 
 ## Contribution
+
+Please feel free to send me a pull request. :smile:
 
 1. Fork ([https://github.com/KemoKemo/gckdir/fork](https://github.com/KemoKemo/gckdir/fork))
 1. Create a feature branch
@@ -88,6 +99,7 @@ MIT
 
 This application uses the following excellent projects.
 
-* [github.com/urfave/cli](https://github.com/urfave/cli) - [MIT License](https://github.com/urfave/cli/blob/master/LICENSE)
+* [github.com/tcnksm/gcli](https://github.com/tcnksm/gcli) - [MIT](https://github.com/tcnksm/gcli/blob/master/LICENSE)
+* [github.com/urfave/cli](https://github.com/urfave/cli) - [MIT](https://github.com/urfave/cli/blob/master/LICENSE)
 * [github.com/ahmetb/go-linq](https://github.com/ahmetb/go-linq) - [Apache License 2.0](https://github.com/ahmetb/go-linq/blob/master/LICENSE)
-* [github.com/skratchdot/open-golang](https://github.com/skratchdot/open-golang) - [MIT License](https://github.com/skratchdot/open-golang/blob/master/LICENSE-MIT)
+* [github.com/skratchdot/open-golang](https://github.com/skratchdot/open-golang) - [MIT](https://github.com/skratchdot/open-golang/blob/master/LICENSE-MIT)
