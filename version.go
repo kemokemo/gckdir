@@ -4,4 +4,4 @@ package main
 const Name string = "gckdir"
 
 // Version is the version of this app.
-const Version string = "0.1.0"
+const Version string = "0.3.0"
