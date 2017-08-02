@@ -49,7 +49,7 @@ func CmdVerify(c *cli.Context) error {
 	var path string
 	if c.Bool("report") || c.Bool("open") {
 		pathList := lib.PathList{SourcePath: source, TargetPath: target}
-		path, err = createReport(pathList, result)
+		path, err = createReport(c.String("output"), pathList, result)
 		if err != nil {
 			return cli.NewExitError(
 				fmt.Sprintf("Failed to create a result report. %v\n%s", err, help),
@@ -72,12 +72,15 @@ func CmdVerify(c *cli.Context) error {
 	return nil
 }
 
-func createReport(pathList lib.PathList, result lib.HashList) (string, error) {
+func createReport(output string, pathList lib.PathList, result lib.HashList) (string, error) {
 	cd, err := os.Getwd()
 	if err != nil {
 		return "", err
 	}
-	path := filepath.Join(cd, time.Now().Format("Result_20060102-030405.html"))
+	if output == "" {
+		output = time.Now().Format("Result_20060102-030405.000000000.html")
+	}
+	path := filepath.Join(cd, output)
 
 	file, err := os.Create(path)
 	defer func() {
