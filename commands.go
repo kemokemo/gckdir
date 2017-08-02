@@ -33,15 +33,19 @@ var (
 			Action:  command.CmdVerify,
 			Flags: []cli.Flag{
 				cli.BoolFlag{
-					Name:  "report",
+					Name:  "report, r",
 					Usage: "Create a result report in html format.",
 				},
+				cli.StringFlag{
+					Name:  "output, o",
+					Usage: "Create a report file with the name specified by this flag. Ignored if --report or --open flag is not specified.",
+				},
 				cli.BoolFlag{
-					Name:  "open",
+					Name:  "open, p",
 					Usage: "Create and open a result report with the default browser. This option includes the 'report' option.",
 				},
 				cli.BoolFlag{
-					Name:  "no-hv",
+					Name:  "no-hv, n",
 					Usage: "Verify only the file and directory structure. Ignore the each hash value of files.",
 				},
 			},
