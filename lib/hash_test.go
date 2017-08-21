@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -113,6 +114,140 @@ func TestVerifyHashList(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := VerifyHashList(tt.args.source, tt.args.target, tt.args.doHashCheck); got.VerifyResult != tt.wantResult {
 				t.Errorf("VerifyHashList() = %v, want %v", got, tt.wantResult)
+			}
+		})
+	}
+}
+
+func TestGetHashList(t *testing.T) {
+	type args struct {
+		source string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    HashList
+		wantErr bool
+	}{
+		{name: "sample-data", args: args{source: filepath.Join("TestData", "sample", "dir.json")},
+			want: HashList{List: []HashData{
+				HashData{RelativePath: "Test.txt", HashValue: "532eaabd9574880dbf76b9b8cc00832c20a6ec113d682299550d7a6e0f345e25"},
+			}},
+			wantErr: false},
+		{name: "invalid-file", args: args{source: filepath.Join("TestData", "sample", "dir2.json")},
+			want:    HashList{},
+			wantErr: true},
+		{name: "sample-dir", args: args{source: filepath.Join("TestData", "dir")},
+			want: HashList{List: []HashData{
+				HashData{RelativePath: "Test.txt", HashValue: "532eaabd9574880dbf76b9b8cc00832c20a6ec113d682299550d7a6e0f345e25"},
+			}},
+			wantErr: false},
+		{name: "invalid-dir", args: args{source: filepath.Join("TestData", "dir2")},
+			want:    HashList{},
+			wantErr: true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := GetHashList(tt.args.source)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetHashList() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetHashList() = %+v, want %+v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_readHashList(t *testing.T) {
+	type args struct {
+		source string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    HashList
+		wantErr bool
+	}{
+		{name: "sample-data", args: args{source: filepath.Join("TestData", "sample", "dir.json")},
+			want: HashList{List: []HashData{
+				HashData{RelativePath: "Test.txt", HashValue: "532eaabd9574880dbf76b9b8cc00832c20a6ec113d682299550d7a6e0f345e25"},
+			}},
+			wantErr: false},
+		{name: "invalid-file", args: args{source: filepath.Join("TestData", "sample", "dir2.json")},
+			want:    HashList{},
+			wantErr: true},
+		{name: "invalid-data", args: args{source: filepath.Join("TestData", "sample", "invalid.json")},
+			want:    HashList{},
+			wantErr: true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := readHashList(tt.args.source)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("readHashList() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("readHashList() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_generateHashList(t *testing.T) {
+	type args struct {
+		dir string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    HashList
+		wantErr bool
+		sortErr bool
+	}{
+		{name: "sample-dir", args: args{dir: filepath.Join("TestData", "dir")},
+			want: HashList{List: []HashData{
+				HashData{RelativePath: "Test.txt", HashValue: "532eaabd9574880dbf76b9b8cc00832c20a6ec113d682299550d7a6e0f345e25"},
+			}},
+			wantErr: false,
+			sortErr: false,
+		},
+		{name: "check-sort-01", args: args{dir: filepath.Join("TestData", "sample")},
+			want: HashList{List: []HashData{
+				HashData{RelativePath: "dir.json", HashValue: "27ef37cea442f72b3209e769cd88537f967c14fe9c744d654d2232cb6483eeb8"},
+				HashData{RelativePath: "invalid.json", HashValue: "f9f2385a7d7cd1e6e9a801ab9bbbf7ae9998706af0c2f8b608a39b42ab94d88f"},
+			}},
+			wantErr: false,
+			sortErr: false,
+		},
+		{name: "check-sort-02", args: args{dir: filepath.Join("TestData", "sample")},
+			want: HashList{List: []HashData{
+				HashData{RelativePath: "invalid.json", HashValue: "f9f2385a7d7cd1e6e9a801ab9bbbf7ae9998706af0c2f8b608a39b42ab94d88f"},
+				HashData{RelativePath: "dir.json", HashValue: "27ef37cea442f72b3209e769cd88537f967c14fe9c744d654d2232cb6483eeb8"},
+			}},
+			wantErr: false,
+			sortErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := generateHashList(tt.args.dir)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("generateHashList() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			g, err := json.MarshalIndent(got, "    ", "")
+			if err != nil {
+				t.Errorf("failed to marshal json %v", err)
+			}
+			w, err := json.MarshalIndent(tt.want, "    ", "")
+			if err != nil {
+				t.Errorf("failed to marshal json %v", err)
+			}
+			if !reflect.DeepEqual(string(g), string(w)) != tt.sortErr {
+				t.Errorf("generateHashList() = %v, w %v", string(g), string(w))
 			}
 		})
 	}
