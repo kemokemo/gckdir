@@ -112,6 +112,9 @@ func generateHashList(dir string) (HashList, error) {
 		}
 		list.List = append(list.List, r.Data)
 	}
+	sort.SliceStable(list.List, func(i int, j int) bool {
+		return list.List[i].RelativePath < list.List[j].RelativePath
+	})
 
 	return list, nil
 }
@@ -137,7 +140,7 @@ func readHashList(source string) (HashList, error) {
 func VerifyHashList(source, target HashList, doHashCheck bool) HashList {
 	result := verifyWithSource(source, target, doHashCheck)
 	result = verifyWithTarget(result, target)
-	sort.Slice(result.List, func(i int, j int) bool {
+	sort.SliceStable(result.List, func(i int, j int) bool {
 		return result.List[i].RelativePath < result.List[j].RelativePath
 	})
 	result.VerifyResult = linq.From(result.List).All(func(arg1 interface{}) bool {
