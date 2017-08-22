@@ -87,7 +87,6 @@ func generateHashList(dir string) (HashList, error) {
 				c <- result{Data: data, Error: err}
 				return
 			}
-
 			data.RelativePath = rel
 
 			if info.IsDir() {
@@ -102,8 +101,8 @@ func generateHashList(dir string) (HashList, error) {
 				}
 				hash := sha256.Sum256(bytes)
 				data.HashValue = hex.EncodeToString(hash[:])
-				c <- result{Data: data, Error: nil}
 			}
+			c <- result{Data: data, Error: nil}
 		}()
 		return nil
 	})

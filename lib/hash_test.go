@@ -88,33 +88,6 @@ func TestHashData(t *testing.T) {
 
 }
 
-func TestGenerateHashList(t *testing.T) {
-	list, err := generateHashList(filepath.Join("TestData", "dir"))
-	if err != nil {
-		t.Errorf(`GenerateHashList(filepath.Join("TestData", "dir")) = %v, %q`, list, err)
-	}
-
-	count := len(list.List)
-	if count == 0 {
-		t.Errorf(`HashList.List has no item.`)
-		return
-	}
-	if count > 1 {
-		t.Errorf(`HashList.List has %d item.`, count)
-		for _, item := range list.List {
-			t.Errorf(`HashData is %v`, item)
-		}
-	}
-
-	data := list.List[0]
-	if data.RelativePath != "Test.txt" {
-		t.Errorf(`HashList.List[0].FileName = %s`, data.RelativePath)
-	}
-	if data.HashValue != "532eaabd9574880dbf76b9b8cc00832c20a6ec113d682299550d7a6e0f345e25" {
-		t.Errorf(`HashList.List[0].HashValue = %s`, data.HashValue)
-	}
-}
-
 func TestVerifyHashList(t *testing.T) {
 	master := HashList{List: []HashData{
 		HashData{RelativePath: "test.bmp", HashValue: "aaaa"},
@@ -189,6 +162,9 @@ func TestGetHashList(t *testing.T) {
 			wantErr: true},
 		{name: "sample-dir", args: args{source: filepath.Join("TestData", "dir")},
 			want: HashList{List: []HashData{
+				HashData{RelativePath: "SubDir", HashValue: "-"},
+				HashData{RelativePath: "SubDir2", HashValue: "-"},
+				HashData{RelativePath: "SubDir2\\Test2.txt", HashValue: "f9f2385a7d7cd1e6e9a801ab9bbbf7ae9998706af0c2f8b608a39b42ab94d88f"},
 				HashData{RelativePath: "Test.txt", HashValue: "532eaabd9574880dbf76b9b8cc00832c20a6ec113d682299550d7a6e0f345e25"},
 			}},
 			wantErr: false},
@@ -259,6 +235,9 @@ func Test_generateHashList(t *testing.T) {
 	}{
 		{name: "sample-dir", args: args{dir: filepath.Join("TestData", "dir")},
 			want: HashList{List: []HashData{
+				HashData{RelativePath: "SubDir", HashValue: "-"},
+				HashData{RelativePath: "SubDir2", HashValue: "-"},
+				HashData{RelativePath: "SubDir2\\Test2.txt", HashValue: "f9f2385a7d7cd1e6e9a801ab9bbbf7ae9998706af0c2f8b608a39b42ab94d88f"},
 				HashData{RelativePath: "Test.txt", HashValue: "532eaabd9574880dbf76b9b8cc00832c20a6ec113d682299550d7a6e0f345e25"},
 			}},
 			wantErr: false,
