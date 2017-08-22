@@ -90,29 +90,32 @@ func TestVerifyHashList(t *testing.T) {
 		HashData{RelativePath: "sample.txt", HashValue: "aaaa"}}}
 
 	type args struct {
-		source      HashList
-		target      HashList
-		doHashCheck bool
+		source             HashList
+		target             HashList
+		doHashCheck        bool
+		doUnnecessaryCheck bool
 	}
 	tests := []struct {
 		name       string
 		args       args
 		wantResult bool
 	}{
-		{name: "Test-Same1", args: args{source: master, target: same, doHashCheck: true}, wantResult: true},
-		{name: "Test-Same2", args: args{source: master, target: same, doHashCheck: false}, wantResult: true},
-		{name: "Test-OtherHash1", args: args{source: master, target: otherHash, doHashCheck: true}, wantResult: false},
-		{name: "Test-OtherHash2", args: args{source: master, target: otherHash, doHashCheck: false}, wantResult: true},
-		{name: "Test-OtherPath1", args: args{source: master, target: otherPath, doHashCheck: true}, wantResult: false},
-		{name: "Test-OtherPath2", args: args{source: master, target: otherPath, doHashCheck: false}, wantResult: false},
-		{name: "Test-OtherDir1", args: args{source: master, target: otherDir, doHashCheck: true}, wantResult: false},
-		{name: "Test-OtherDir2", args: args{source: master, target: otherDir, doHashCheck: false}, wantResult: false},
-		{name: "Test-More1", args: args{source: master, target: morePath, doHashCheck: true}, wantResult: false},
-		{name: "Test-More2", args: args{source: master, target: morePath, doHashCheck: false}, wantResult: false},
+		{name: "Test-Same1", args: args{source: master, target: same, doHashCheck: true, doUnnecessaryCheck: true}, wantResult: true},
+		{name: "Test-Same2", args: args{source: master, target: same, doHashCheck: false, doUnnecessaryCheck: true}, wantResult: true},
+		{name: "Test-OtherHash1", args: args{source: master, target: otherHash, doHashCheck: true, doUnnecessaryCheck: true}, wantResult: false},
+		{name: "Test-OtherHash2", args: args{source: master, target: otherHash, doHashCheck: false, doUnnecessaryCheck: true}, wantResult: true},
+		{name: "Test-OtherPath1", args: args{source: master, target: otherPath, doHashCheck: true, doUnnecessaryCheck: true}, wantResult: false},
+		{name: "Test-OtherPath2", args: args{source: master, target: otherPath, doHashCheck: false, doUnnecessaryCheck: true}, wantResult: false},
+		{name: "Test-OtherDir1", args: args{source: master, target: otherDir, doHashCheck: true, doUnnecessaryCheck: true}, wantResult: false},
+		{name: "Test-OtherDir2", args: args{source: master, target: otherDir, doHashCheck: false, doUnnecessaryCheck: true}, wantResult: false},
+		{name: "Test-More1", args: args{source: master, target: morePath, doHashCheck: true, doUnnecessaryCheck: true}, wantResult: false},
+		{name: "Test-More2", args: args{source: master, target: morePath, doHashCheck: false, doUnnecessaryCheck: true}, wantResult: false},
+		{name: "Test-More3", args: args{source: master, target: morePath, doHashCheck: true, doUnnecessaryCheck: false}, wantResult: true},
+		{name: "Test-More4", args: args{source: master, target: morePath, doHashCheck: false, doUnnecessaryCheck: false}, wantResult: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := VerifyHashList(tt.args.source, tt.args.target, tt.args.doHashCheck); got.VerifyResult != tt.wantResult {
+			if got := VerifyHashList(tt.args.source, tt.args.target, tt.args.doHashCheck, tt.args.doUnnecessaryCheck); got.VerifyResult != tt.wantResult {
 				t.Errorf("VerifyHashList() = %v, want %v", got, tt.wantResult)
 			}
 		})

@@ -137,9 +137,9 @@ func readHashList(source string) (HashList, error) {
 
 // VerifyHashList verifies hash list of source and target.
 // Then, returns HashList that has VerifyResult.
-func VerifyHashList(source, target HashList, doHashCheck bool) HashList {
+func VerifyHashList(source, target HashList, doHashCheck, doUnnecessaryCheck bool) HashList {
 	result := verifyWithSource(source, target, doHashCheck)
-	result = verifyWithTarget(result, target)
+	result = verifyWithTarget(result, target, doUnnecessaryCheck)
 	sort.SliceStable(result.List, func(i int, j int) bool {
 		return result.List[i].RelativePath < result.List[j].RelativePath
 	})
@@ -198,17 +198,21 @@ func verifyWithSource(source, target HashList, doHashCheck bool) HashList {
 
 // verifyWithTarget verifies the result of verification with the hash list
 // of the target directory to check wheather the unnecessary items exist.
-func verifyWithTarget(result, target HashList) HashList {
+func verifyWithTarget(result, target HashList, doUnnecessaryCheck bool) HashList {
 	for _, item := range target.List {
 		more := linq.From(result.List).
 			SingleWith(func(c interface{}) bool {
 				return c.(HashData).RelativePath == item.RelativePath
 			})
 
-		if more == nil {
+		if more == nil && doUnnecessaryCheck {
 			item.VerifyResult = false
 			item.Reason = "Unnecessary item exists."
 			log.Printf(`Unnecessary item exists. "%s"`, item.RelativePath)
+			result.List = append(result.List, item)
+		} else if more == nil && !doUnnecessaryCheck {
+			item.VerifyResult = true
+			item.Reason = "Ignore that an unnecessary item exists."
 			result.List = append(result.List, item)
 		}
 	}
