@@ -186,7 +186,7 @@ func TestGetHashList(t *testing.T) {
 			want: HashList{List: []HashData{
 				HashData{RelativePath: "SubDir", HashValue: "-"},
 				HashData{RelativePath: "SubDir2", HashValue: "-"},
-				HashData{RelativePath: "SubDir2\\Test2.txt", HashValue: "f9f2385a7d7cd1e6e9a801ab9bbbf7ae9998706af0c2f8b608a39b42ab94d88f"},
+				HashData{RelativePath: filepath.Join("SubDir2", "Test2.txt"), HashValue: "f9f2385a7d7cd1e6e9a801ab9bbbf7ae9998706af0c2f8b608a39b42ab94d88f"},
 				HashData{RelativePath: "Test.txt", HashValue: "532eaabd9574880dbf76b9b8cc00832c20a6ec113d682299550d7a6e0f345e25"},
 			}},
 			wantErr: false},
@@ -259,7 +259,7 @@ func Test_generateHashList(t *testing.T) {
 			want: HashList{List: []HashData{
 				HashData{RelativePath: "SubDir", HashValue: "-"},
 				HashData{RelativePath: "SubDir2", HashValue: "-"},
-				HashData{RelativePath: "SubDir2\\Test2.txt", HashValue: "f9f2385a7d7cd1e6e9a801ab9bbbf7ae9998706af0c2f8b608a39b42ab94d88f"},
+				HashData{RelativePath: filepath.Join("SubDir2", "Test2.txt"), HashValue: "f9f2385a7d7cd1e6e9a801ab9bbbf7ae9998706af0c2f8b608a39b42ab94d88f"},
 				HashData{RelativePath: "Test.txt", HashValue: "532eaabd9574880dbf76b9b8cc00832c20a6ec113d682299550d7a6e0f345e25"},
 			}},
 			wantErr: false,
