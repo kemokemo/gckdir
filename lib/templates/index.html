@@ -9,13 +9,22 @@
   </head>
   <body>
     <h1>Directory Verification Result</h1>
-    <p>Source: {{.PathList.SourcePath}}</p>
-    <p>Target: {{.PathList.TargetPath}}</p>
+    <h2>Information</h2>
+    <p>This result was generated from the following source and target.</p>
+    <ul>
+      <li>Source: {{.PathList.SourcePath}}</li>
+      <li>Target: {{.PathList.TargetPath}}</li>
+    </ul><br>
+    <p>This result contains the following number of directories and files.</p>
+    <ul>
+      <li>Directories: {{.DirectoryInfo.Directories}}</li>
+      <li>Files: {{.DirectoryInfo.Files}}</li>
+    </ul><br>
     <h2>Total Result
       <div class="alert alert-{{.Result.VerifyResult | rowAttr}}">
           <strong>{{.Result.VerifyResult | passFail}}</strong>
       </div>
-    </h2>
+    </h2><br>
     <h2>Details</h2>
     <table class="table table-bordered">
       <thead>

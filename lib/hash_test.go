@@ -9,6 +9,53 @@ import (
 	"testing"
 )
 
+func Test_HashList_GetDirectoryInfo(t *testing.T) {
+	tests := []struct {
+		name            string
+		source          HashList
+		wantDirectories int
+		wantFiles       int
+	}{
+		{name: "normal-01",
+			source: HashList{
+				List: []HashData{
+					HashData{RelativePath: "test.bmp", HashValue: "aaaa"},
+					HashData{RelativePath: "data", HashValue: "-"},
+					HashData{RelativePath: "data2", HashValue: "-"}}},
+			wantDirectories: 2,
+			wantFiles:       1,
+		},
+		{name: "normal-02",
+			source: HashList{
+				List: []HashData{
+					HashData{RelativePath: "data", HashValue: "-"},
+					HashData{RelativePath: "data2", HashValue: "-"}}},
+			wantDirectories: 2,
+			wantFiles:       0,
+		},
+		{name: "normal-03",
+			source: HashList{
+				List: []HashData{
+					HashData{RelativePath: "test.bmp", HashValue: "aaaa"},
+					HashData{RelativePath: "hoge.txt", HashValue: "hjsk"}}},
+			wantDirectories: 0,
+			wantFiles:       2,
+		},
+		{name: "nil",
+			source:          HashList{},
+			wantDirectories: 0,
+			wantFiles:       0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotDir, gotF := tt.source.GetDirectoryInfo(); gotDir != tt.wantDirectories || gotF != tt.wantFiles {
+				t.Errorf("HashList.GetDirectoryInfo() = (%v, %v), want (%v, %v)", gotDir, gotF, tt.wantDirectories, tt.wantFiles)
+			}
+		})
+	}
+}
+
 func TestHashData(t *testing.T) {
 	var tests = []struct {
 		file string

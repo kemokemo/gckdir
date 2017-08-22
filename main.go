@@ -8,6 +8,8 @@ import (
 	"github.com/urfave/cli"
 )
 
+//go:generate go-bindata -pkg lib -o lib/bindata.go lib/templates/
+
 func main() {
 	os.Exit(run(os.Args))
 }

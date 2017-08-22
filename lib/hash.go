@@ -27,6 +27,16 @@ type HashList struct {
 	VerifyResult bool       `json:"verify_result,omitempty"`
 }
 
+// GetDirectoryInfo returns the number of directories and files.
+// If HashList.List is nil or empty, returns 0 and 0.
+func (h *HashList) GetDirectoryInfo() (int, int) {
+	directories := linq.From(h.List).CountWith(func(arg1 interface{}) bool {
+		return arg1.(HashData).HashValue == "-"
+	})
+	files := len(h.List) - directories
+	return directories, files
+}
+
 // HashData is hash value and file name struct
 type HashData struct {
 	RelativePath string `json:"relative_path"`
