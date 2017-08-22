@@ -25,12 +25,22 @@ func CreateReport(w io.Writer, pathList PathList, result HashList) error {
 		return err
 	}
 
+	dir, file := result.GetDirectoryInfo()
+	type DirectoryInfo struct {
+		Directories int
+		Files       int
+	}
 	values := struct {
-		PathList PathList
-		Result   HashList
+		PathList      PathList
+		Result        HashList
+		DirectoryInfo DirectoryInfo
 	}{
 		PathList: pathList,
 		Result:   result,
+		DirectoryInfo: DirectoryInfo{
+			Directories: dir,
+			Files:       file,
+		},
 	}
 	err = report.Execute(w, values)
 	if err != nil {

@@ -45,8 +45,12 @@ var (
 					Usage: "Create and open a result report with the default browser. This option includes the 'report' option.",
 				},
 				cli.BoolFlag{
-					Name:  "no-hv, n",
+					Name:  "no-hv, nh",
 					Usage: "Verify only the file and directory structure. Ignore the each hash value of files.",
+				},
+				cli.BoolFlag{
+					Name:  "no-uv, nu",
+					Usage: "Ignore the unnecessary files.",
 				},
 			},
 			ArgsUsage: "[source] [target]\n\t\tsource: a json file path or a directory path\n\t\ttarget: a directory path",

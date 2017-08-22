@@ -45,7 +45,7 @@ func CmdVerify(c *cli.Context) error {
 			ExitCodeFunctionError)
 	}
 
-	result := lib.VerifyHashList(sourceList, targetList, !c.Bool("no-hv"))
+	result := lib.VerifyHashList(sourceList, targetList, !c.Bool("no-hv"), !c.Bool("no-uv"))
 	var path string
 	if c.Bool("report") || c.Bool("open") {
 		pathList := lib.PathList{SourcePath: source, TargetPath: target}

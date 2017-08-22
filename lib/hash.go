@@ -27,6 +27,16 @@ type HashList struct {
 	VerifyResult bool       `json:"verify_result,omitempty"`
 }
 
+// GetDirectoryInfo returns the number of directories and files.
+// If HashList.List is nil or empty, returns 0 and 0.
+func (h *HashList) GetDirectoryInfo() (int, int) {
+	directories := linq.From(h.List).CountWith(func(arg1 interface{}) bool {
+		return arg1.(HashData).HashValue == "-"
+	})
+	files := len(h.List) - directories
+	return directories, files
+}
+
 // HashData is hash value and file name struct
 type HashData struct {
 	RelativePath string `json:"relative_path"`
@@ -77,7 +87,6 @@ func generateHashList(dir string) (HashList, error) {
 				c <- result{Data: data, Error: err}
 				return
 			}
-
 			data.RelativePath = rel
 
 			if info.IsDir() {
@@ -92,8 +101,8 @@ func generateHashList(dir string) (HashList, error) {
 				}
 				hash := sha256.Sum256(bytes)
 				data.HashValue = hex.EncodeToString(hash[:])
-				c <- result{Data: data, Error: nil}
 			}
+			c <- result{Data: data, Error: nil}
 		}()
 		return nil
 	})
@@ -137,9 +146,9 @@ func readHashList(source string) (HashList, error) {
 
 // VerifyHashList verifies hash list of source and target.
 // Then, returns HashList that has VerifyResult.
-func VerifyHashList(source, target HashList, doHashCheck bool) HashList {
+func VerifyHashList(source, target HashList, doHashCheck, doUnnecessaryCheck bool) HashList {
 	result := verifyWithSource(source, target, doHashCheck)
-	result = verifyWithTarget(result, target)
+	result = verifyWithTarget(result, target, doUnnecessaryCheck)
 	sort.SliceStable(result.List, func(i int, j int) bool {
 		return result.List[i].RelativePath < result.List[j].RelativePath
 	})
@@ -198,17 +207,21 @@ func verifyWithSource(source, target HashList, doHashCheck bool) HashList {
 
 // verifyWithTarget verifies the result of verification with the hash list
 // of the target directory to check wheather the unnecessary items exist.
-func verifyWithTarget(result, target HashList) HashList {
+func verifyWithTarget(result, target HashList, doUnnecessaryCheck bool) HashList {
 	for _, item := range target.List {
 		more := linq.From(result.List).
 			SingleWith(func(c interface{}) bool {
 				return c.(HashData).RelativePath == item.RelativePath
 			})
 
-		if more == nil {
+		if more == nil && doUnnecessaryCheck {
 			item.VerifyResult = false
 			item.Reason = "Unnecessary item exists."
 			log.Printf(`Unnecessary item exists. "%s"`, item.RelativePath)
+			result.List = append(result.List, item)
+		} else if more == nil && !doUnnecessaryCheck {
+			item.VerifyResult = true
+			item.Reason = "Ignore that an unnecessary item exists."
 			result.List = append(result.List, item)
 		}
 	}

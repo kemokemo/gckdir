@@ -3,11 +3,80 @@ package lib
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
+	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
 )
+
+func TestMain(t *testing.M) {
+	setup()
+	exitCode := t.Run()
+	os.Exit(exitCode)
+}
+
+func setup() {
+	path := filepath.Join("TestData", "dir", "SubDir")
+	_, err := os.Stat(path)
+	if err == nil {
+		return
+	}
+
+	err = os.Mkdir(path, 0777)
+	if err != nil {
+		log.Println("Failed to make dir", err)
+		return
+	}
+}
+
+func Test_HashList_GetDirectoryInfo(t *testing.T) {
+	tests := []struct {
+		name            string
+		source          HashList
+		wantDirectories int
+		wantFiles       int
+	}{
+		{name: "normal-01",
+			source: HashList{
+				List: []HashData{
+					HashData{RelativePath: "test.bmp", HashValue: "aaaa"},
+					HashData{RelativePath: "data", HashValue: "-"},
+					HashData{RelativePath: "data2", HashValue: "-"}}},
+			wantDirectories: 2,
+			wantFiles:       1,
+		},
+		{name: "normal-02",
+			source: HashList{
+				List: []HashData{
+					HashData{RelativePath: "data", HashValue: "-"},
+					HashData{RelativePath: "data2", HashValue: "-"}}},
+			wantDirectories: 2,
+			wantFiles:       0,
+		},
+		{name: "normal-03",
+			source: HashList{
+				List: []HashData{
+					HashData{RelativePath: "test.bmp", HashValue: "aaaa"},
+					HashData{RelativePath: "hoge.txt", HashValue: "hjsk"}}},
+			wantDirectories: 0,
+			wantFiles:       2,
+		},
+		{name: "nil",
+			source:          HashList{},
+			wantDirectories: 0,
+			wantFiles:       0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotDir, gotF := tt.source.GetDirectoryInfo(); gotDir != tt.wantDirectories || gotF != tt.wantFiles {
+				t.Errorf("HashList.GetDirectoryInfo() = (%v, %v), want (%v, %v)", gotDir, gotF, tt.wantDirectories, tt.wantFiles)
+			}
+		})
+	}
+}
 
 func TestHashData(t *testing.T) {
 	var tests = []struct {
@@ -41,33 +110,6 @@ func TestHashData(t *testing.T) {
 
 }
 
-func TestGenerateHashList(t *testing.T) {
-	list, err := generateHashList(filepath.Join("TestData", "dir"))
-	if err != nil {
-		t.Errorf(`GenerateHashList(filepath.Join("TestData", "dir")) = %v, %q`, list, err)
-	}
-
-	count := len(list.List)
-	if count == 0 {
-		t.Errorf(`HashList.List has no item.`)
-		return
-	}
-	if count > 1 {
-		t.Errorf(`HashList.List has %d item.`, count)
-		for _, item := range list.List {
-			t.Errorf(`HashData is %v`, item)
-		}
-	}
-
-	data := list.List[0]
-	if data.RelativePath != "Test.txt" {
-		t.Errorf(`HashList.List[0].FileName = %s`, data.RelativePath)
-	}
-	if data.HashValue != "532eaabd9574880dbf76b9b8cc00832c20a6ec113d682299550d7a6e0f345e25" {
-		t.Errorf(`HashList.List[0].HashValue = %s`, data.HashValue)
-	}
-}
-
 func TestVerifyHashList(t *testing.T) {
 	master := HashList{List: []HashData{
 		HashData{RelativePath: "test.bmp", HashValue: "aaaa"},
@@ -90,29 +132,32 @@ func TestVerifyHashList(t *testing.T) {
 		HashData{RelativePath: "sample.txt", HashValue: "aaaa"}}}
 
 	type args struct {
-		source      HashList
-		target      HashList
-		doHashCheck bool
+		source             HashList
+		target             HashList
+		doHashCheck        bool
+		doUnnecessaryCheck bool
 	}
 	tests := []struct {
 		name       string
 		args       args
 		wantResult bool
 	}{
-		{name: "Test-Same1", args: args{source: master, target: same, doHashCheck: true}, wantResult: true},
-		{name: "Test-Same2", args: args{source: master, target: same, doHashCheck: false}, wantResult: true},
-		{name: "Test-OtherHash1", args: args{source: master, target: otherHash, doHashCheck: true}, wantResult: false},
-		{name: "Test-OtherHash2", args: args{source: master, target: otherHash, doHashCheck: false}, wantResult: true},
-		{name: "Test-OtherPath1", args: args{source: master, target: otherPath, doHashCheck: true}, wantResult: false},
-		{name: "Test-OtherPath2", args: args{source: master, target: otherPath, doHashCheck: false}, wantResult: false},
-		{name: "Test-OtherDir1", args: args{source: master, target: otherDir, doHashCheck: true}, wantResult: false},
-		{name: "Test-OtherDir2", args: args{source: master, target: otherDir, doHashCheck: false}, wantResult: false},
-		{name: "Test-More1", args: args{source: master, target: morePath, doHashCheck: true}, wantResult: false},
-		{name: "Test-More2", args: args{source: master, target: morePath, doHashCheck: false}, wantResult: false},
+		{name: "Test-Same1", args: args{source: master, target: same, doHashCheck: true, doUnnecessaryCheck: true}, wantResult: true},
+		{name: "Test-Same2", args: args{source: master, target: same, doHashCheck: false, doUnnecessaryCheck: true}, wantResult: true},
+		{name: "Test-OtherHash1", args: args{source: master, target: otherHash, doHashCheck: true, doUnnecessaryCheck: true}, wantResult: false},
+		{name: "Test-OtherHash2", args: args{source: master, target: otherHash, doHashCheck: false, doUnnecessaryCheck: true}, wantResult: true},
+		{name: "Test-OtherPath1", args: args{source: master, target: otherPath, doHashCheck: true, doUnnecessaryCheck: true}, wantResult: false},
+		{name: "Test-OtherPath2", args: args{source: master, target: otherPath, doHashCheck: false, doUnnecessaryCheck: true}, wantResult: false},
+		{name: "Test-OtherDir1", args: args{source: master, target: otherDir, doHashCheck: true, doUnnecessaryCheck: true}, wantResult: false},
+		{name: "Test-OtherDir2", args: args{source: master, target: otherDir, doHashCheck: false, doUnnecessaryCheck: true}, wantResult: false},
+		{name: "Test-More1", args: args{source: master, target: morePath, doHashCheck: true, doUnnecessaryCheck: true}, wantResult: false},
+		{name: "Test-More2", args: args{source: master, target: morePath, doHashCheck: false, doUnnecessaryCheck: true}, wantResult: false},
+		{name: "Test-More3", args: args{source: master, target: morePath, doHashCheck: true, doUnnecessaryCheck: false}, wantResult: true},
+		{name: "Test-More4", args: args{source: master, target: morePath, doHashCheck: false, doUnnecessaryCheck: false}, wantResult: true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := VerifyHashList(tt.args.source, tt.args.target, tt.args.doHashCheck); got.VerifyResult != tt.wantResult {
+			if got := VerifyHashList(tt.args.source, tt.args.target, tt.args.doHashCheck, tt.args.doUnnecessaryCheck); got.VerifyResult != tt.wantResult {
 				t.Errorf("VerifyHashList() = %v, want %v", got, tt.wantResult)
 			}
 		})
@@ -139,6 +184,9 @@ func TestGetHashList(t *testing.T) {
 			wantErr: true},
 		{name: "sample-dir", args: args{source: filepath.Join("TestData", "dir")},
 			want: HashList{List: []HashData{
+				HashData{RelativePath: "SubDir", HashValue: "-"},
+				HashData{RelativePath: "SubDir2", HashValue: "-"},
+				HashData{RelativePath: filepath.Join("SubDir2", "Test2.txt"), HashValue: "f9f2385a7d7cd1e6e9a801ab9bbbf7ae9998706af0c2f8b608a39b42ab94d88f"},
 				HashData{RelativePath: "Test.txt", HashValue: "532eaabd9574880dbf76b9b8cc00832c20a6ec113d682299550d7a6e0f345e25"},
 			}},
 			wantErr: false},
@@ -209,6 +257,9 @@ func Test_generateHashList(t *testing.T) {
 	}{
 		{name: "sample-dir", args: args{dir: filepath.Join("TestData", "dir")},
 			want: HashList{List: []HashData{
+				HashData{RelativePath: "SubDir", HashValue: "-"},
+				HashData{RelativePath: "SubDir2", HashValue: "-"},
+				HashData{RelativePath: filepath.Join("SubDir2", "Test2.txt"), HashValue: "f9f2385a7d7cd1e6e9a801ab9bbbf7ae9998706af0c2f8b608a39b42ab94d88f"},
 				HashData{RelativePath: "Test.txt", HashValue: "532eaabd9574880dbf76b9b8cc00832c20a6ec113d682299550d7a6e0f345e25"},
 			}},
 			wantErr: false,

@@ -69,7 +69,16 @@ If you want to check the result immediately on the browser, please use the `--op
 $ gckdir verify --no-hv hash_name.json path/to/target_directory
 ```
 
-Please use `--no-hv` or `-n` option if you only want to check if files and directories are arranged with the intended structure and ignore the difference in hash value. This option can be used with `--open` or `--report`.
+Please use `--no-hv` or `-nh` option if you only want to check if files and directories are arranged with the intended structure and ignore the difference in hash value. This option can be used with `--open` or `--report`.
+
+#### Ignore ignore files of other software
+
+```bash
+$ gckdir verify --no-uv hash_name.json path/to/target_directory
+```
+
+Please use `--no-uv` or `-nu` option if you want to ignore files of
+other software in the target directory. This option can be used with `--open` or `--report`.
 
 ## ExitCode
 
