@@ -3,11 +3,33 @@ package lib
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
+	"os"
 	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
 )
+
+func TestMain(t *testing.M) {
+	setup()
+	exitCode := t.Run()
+	os.Exit(exitCode)
+}
+
+func setup() {
+	path := filepath.Join("TestData", "dir", "SubDir")
+	_, err := os.Stat(path)
+	if err == nil {
+		return
+	}
+
+	err = os.Mkdir(path, 0777)
+	if err != nil {
+		log.Println("Failed to make dir", err)
+		return
+	}
+}
 
 func Test_HashList_GetDirectoryInfo(t *testing.T) {
 	tests := []struct {
