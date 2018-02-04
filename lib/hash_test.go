@@ -267,7 +267,7 @@ func Test_generateHashList(t *testing.T) {
 		},
 		{name: "check-sort-01", args: args{dir: filepath.Join("TestData", "sample")},
 			want: HashList{List: []HashData{
-				HashData{RelativePath: "dir.json", HashValue: "27ef37cea442f72b3209e769cd88537f967c14fe9c744d654d2232cb6483eeb8"},
+				HashData{RelativePath: "dir.json", HashValue: "6924024bc2bd0646a186723b9bd272dafdd1910eeabd8fe89462502e3f48b704"},
 				HashData{RelativePath: "invalid.json", HashValue: "f9f2385a7d7cd1e6e9a801ab9bbbf7ae9998706af0c2f8b608a39b42ab94d88f"},
 			}},
 			wantErr: false,
@@ -276,7 +276,7 @@ func Test_generateHashList(t *testing.T) {
 		{name: "check-sort-02", args: args{dir: filepath.Join("TestData", "sample")},
 			want: HashList{List: []HashData{
 				HashData{RelativePath: "invalid.json", HashValue: "f9f2385a7d7cd1e6e9a801ab9bbbf7ae9998706af0c2f8b608a39b42ab94d88f"},
-				HashData{RelativePath: "dir.json", HashValue: "27ef37cea442f72b3209e769cd88537f967c14fe9c744d654d2232cb6483eeb8"},
+				HashData{RelativePath: "dir.json", HashValue: "6924024bc2bd0646a186723b9bd272dafdd1910eeabd8fe89462502e3f48b704"},
 			}},
 			wantErr: false,
 			sortErr: true,
