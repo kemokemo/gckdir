@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/KemoKemo/gckdir.svg?branch=master)](https://travis-ci.org/KemoKemo/gckdir) [![Coverage Status](https://coveralls.io/repos/github/KemoKemo/gckdir/badge.svg?branch=master)](https://coveralls.io/github/KemoKemo/gckdir?branch=master) [![Go Report Card](https://goreportcard.com/badge/github.com/KemoKemo/gckdir)](https://goreportcard.com/report/github.com/KemoKemo/gckdir) [![Powered By: GoReleaser](https://img.shields.io/badge/powered%20by-goreleaser-green.svg?style=flat-square)](https://github.com/goreleaser)
+[![Build Status](https://travis-ci.org/kemokemo/gckdir.svg?branch=master)](https://travis-ci.org/kemokemo/gckdir) [![Coverage Status](https://coveralls.io/repos/github/kemokemo/gckdir/badge.svg?branch=master)](https://coveralls.io/github/kemokemo/gckdir?branch=master) [![Go Report Card](https://goreportcard.com/badge/github.com/kemokemo/gckdir)](https://goreportcard.com/report/github.com/kemokemo/gckdir) [![Powered By: GoReleaser](https://img.shields.io/badge/powered%20by-goreleaser-green.svg?style=flat-square)](https://github.com/goreleaser)
 
 # gckdir
 
@@ -87,18 +87,18 @@ Even when the comparison result is Fail, an integer of 1 or more is returned as 
 
 ## Install
 
-Please download the one suitable for your platform from [the latest release page](https://github.com/KemoKemo/gckdir/releases/latest).  
+Please download the one suitable for your platform from [the latest release page](https://github.com/kemokemo/gckdir/releases/latest).  
 To get the latest source code, use `go get`:
 
 ```bash
-$ go get -d github.com/KemoKemo/gckdir
+$ go get -d github.com/kemokemo/gckdir
 ```
 
 ## Contribution
 
 Please feel free to send me a pull request. :smile:
 
-1. Fork ([https://github.com/KemoKemo/gckdir/fork](https://github.com/KemoKemo/gckdir/fork))
+1. Fork ([https://github.com/kemokemo/gckdir/fork](https://github.com/kemokemo/gckdir/fork))
 1. Create a feature branch
 1. Commit your changes
 1. Rebase your local changes against the master branch
@@ -108,7 +108,7 @@ Please feel free to send me a pull request. :smile:
 
 ## Author
 
-[KemoKemo](https://github.com/KemoKemo)
+[kemokemo](https://github.com/kemokemo)
 
 ## License
 

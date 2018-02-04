@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/KemoKemo/gckdir/command"
+	"github.com/kemokemo/gckdir/command"
 	"github.com/urfave/cli"
 )
 
@@ -18,7 +18,7 @@ func run(args []string) int {
 	app := cli.NewApp()
 	app.Name = Name
 	app.Version = Version
-	app.Author = "KemoKemo"
+	app.Author = "kemokemo"
 	app.Email = "t2wonderland@gmail.com"
 	app.Usage = "generate a hash list of a correct directory and verify the target directory's structure and each hash value of files."
 

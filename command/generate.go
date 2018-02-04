@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/KemoKemo/gckdir/lib"
+	"github.com/kemokemo/gckdir/lib"
 	"github.com/urfave/cli"
 )
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/KemoKemo/gckdir/command"
+	"github.com/kemokemo/gckdir/command"
 	"github.com/urfave/cli"
 )
 
