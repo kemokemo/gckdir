@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -93,14 +94,12 @@ func generateHashList(dir string) (HashList, error) {
 				// directories do not have hash value
 				data.HashValue = "-"
 			} else {
-				bytes, err := ioutil.ReadFile(path)
+				data.HashValue, err = generateHash(path)
 				if err != nil {
-					log.Println("ReadFile error.", err)
+					log.Printf("failed to generate the hash value for '%v', %v", path, err)
 					c <- result{Data: data, Error: err}
 					return
 				}
-				hash := sha256.Sum256(bytes)
-				data.HashValue = hex.EncodeToString(hash[:])
 			}
 			c <- result{Data: data, Error: nil}
 		}()
@@ -126,6 +125,21 @@ func generateHashList(dir string) (HashList, error) {
 	})
 
 	return list, nil
+}
+
+func generateHash(path string) (string, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	h := sha256.New()
+	_, err = io.Copy(h, f)
+	if err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(h.Sum(nil)), nil
 }
 
 // ReadHashList reads source json file and return a hash list.
