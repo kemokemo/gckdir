@@ -2,7 +2,6 @@ package command
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"time"
@@ -66,7 +65,7 @@ func CmdVerify(c *cli.Context) error {
 	}
 
 	if result.VerifyResult == false {
-		log.Println("Verification failed.")
+		fmt.Println("Verification failed.")
 		return cli.NewExitError("", ExitCodeVerificationFailed)
 	}
 	return nil
@@ -86,7 +85,7 @@ func createReport(output string, pathList lib.PathList, result lib.HashList) (st
 	defer func() {
 		err = file.Close()
 		if err != nil {
-			log.Println("Failed to close file", err)
+			fmt.Println("failed to close file: ", err)
 		}
 	}()
 

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
 
 	"github.com/kemokemo/gckdir/command"
@@ -28,7 +28,7 @@ func run(args []string) int {
 
 	err := app.Run(args)
 	if err != nil {
-		log.Println("Failed to run. ", err)
+		fmt.Println("failed to run: ", err)
 		return command.ExitCodeFailed
 	}
 	return command.ExitCodeOK
