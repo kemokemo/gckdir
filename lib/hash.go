@@ -4,9 +4,9 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -84,7 +84,7 @@ func generateHashList(dir string) (HashList, error) {
 			data := HashData{}
 			rel, err := filepath.Rel(dir, path)
 			if err != nil {
-				log.Println("Get relative path error.", err)
+				fmt.Println("failed to get relative path: ", err)
 				c <- result{Data: data, Error: err}
 				return
 			}
@@ -96,7 +96,7 @@ func generateHashList(dir string) (HashList, error) {
 			} else {
 				data.HashValue, err = generateHash(path)
 				if err != nil {
-					log.Printf("failed to generate the hash value for '%v', %v", path, err)
+					fmt.Printf("failed to generate the hash value of '%v': %v\n", path, err)
 					c <- result{Data: data, Error: err}
 					return
 				}
@@ -116,7 +116,7 @@ func generateHashList(dir string) (HashList, error) {
 
 	for r := range c {
 		if r.Error != nil {
-			log.Println(err)
+			fmt.Println(err)
 		}
 		list.List = append(list.List, r.Data)
 	}
@@ -196,7 +196,7 @@ func verifyWithSource(source, target HashList, doHashCheck bool) HashList {
 				Reason:       message,
 			}
 			result.List = append(result.List, fail)
-			log.Printf(`Required item does not exist. "%s"`, item.RelativePath)
+			fmt.Printf(`required item does not exist: '%s'\n`, item.RelativePath)
 			continue
 		}
 
@@ -207,7 +207,7 @@ func verifyWithSource(source, target HashList, doHashCheck bool) HashList {
 			if doHashCheck {
 				data.VerifyResult = false
 				data.Reason = "Hash value does not match"
-				log.Printf(`Hash value does not match. "%s"`, item.RelativePath)
+				fmt.Printf(`hash value does not match: '%s'\n`, item.RelativePath)
 			} else {
 				data.VerifyResult = true
 				data.Reason = "Ignore that the hash values do not match"
@@ -231,7 +231,7 @@ func verifyWithTarget(result, target HashList, doUnnecessaryCheck bool) HashList
 		if more == nil && doUnnecessaryCheck {
 			item.VerifyResult = false
 			item.Reason = "Unnecessary item exists."
-			log.Printf(`Unnecessary item exists. "%s"`, item.RelativePath)
+			fmt.Printf(`unnecessary item exists: '%s'\n`, item.RelativePath)
 			result.List = append(result.List, item)
 		} else if more == nil && !doUnnecessaryCheck {
 			item.VerifyResult = true

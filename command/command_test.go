@@ -2,7 +2,6 @@ package command
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"testing"
 
@@ -48,6 +47,6 @@ func setup() {
 	var err error
 	dir, err = os.Getwd()
 	if err != nil {
-		log.Println("Failed to get current directory path. ", err)
+		fmt.Println("failed to get current directory path: ", err)
 	}
 }

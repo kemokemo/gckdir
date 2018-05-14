@@ -2,8 +2,8 @@ package lib
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -26,7 +26,7 @@ func setup() {
 
 	err = os.Mkdir(path, 0777)
 	if err != nil {
-		log.Println("Failed to make dir", err)
+		fmt.Println("failed to make dir:", err)
 		return
 	}
 }
