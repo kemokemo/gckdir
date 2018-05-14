@@ -196,7 +196,7 @@ func verifyWithSource(source, target HashList, doHashCheck bool) HashList {
 				Reason:       message,
 			}
 			result.List = append(result.List, fail)
-			fmt.Printf(`required item does not exist: '%s'\n`, item.RelativePath)
+			fmt.Printf("Required item does not exist: '%s'\n", item.RelativePath)
 			continue
 		}
 
@@ -207,7 +207,7 @@ func verifyWithSource(source, target HashList, doHashCheck bool) HashList {
 			if doHashCheck {
 				data.VerifyResult = false
 				data.Reason = "Hash value does not match"
-				fmt.Printf(`hash value does not match: '%s'\n`, item.RelativePath)
+				fmt.Printf("%s: '%s'\n", data.Reason, item.RelativePath)
 			} else {
 				data.VerifyResult = true
 				data.Reason = "Ignore that the hash values do not match"
@@ -231,7 +231,7 @@ func verifyWithTarget(result, target HashList, doUnnecessaryCheck bool) HashList
 		if more == nil && doUnnecessaryCheck {
 			item.VerifyResult = false
 			item.Reason = "Unnecessary item exists."
-			fmt.Printf(`unnecessary item exists: '%s'\n`, item.RelativePath)
+			fmt.Printf("%s: '%s'\n", item.Reason, item.RelativePath)
 			result.List = append(result.List, item)
 		} else if more == nil && !doUnnecessaryCheck {
 			item.VerifyResult = true

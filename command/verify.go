@@ -65,7 +65,7 @@ func CmdVerify(c *cli.Context) error {
 	}
 
 	if result.VerifyResult == false {
-		fmt.Println("verification failed.")
+		fmt.Println("Verification failed.")
 		return cli.NewExitError("", ExitCodeVerificationFailed)
 	}
 	return nil
