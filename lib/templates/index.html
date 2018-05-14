@@ -4,7 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style type="text/css">
+    <!--
+    body{font-family:arial,sans-serif,monospace}.h1,.h2,.h3,h1,h2,h3{margin-top:20px;margin-bottom:10px}.h1,.h2,.h3,.h4,.h5,.h6,h1,h2,h3,h4,h5,h6{font-family:inherit;font-weight:500;line-height:1.1;color:inherit}h1{margin:.67em 0;font-size:2em}h2{padding:.25em .5em;color:#494949;background:transparent;border-left:solid 5px #666}.alert{padding:15px;margin-bottom:20px;border:1px solid transparent;border-radius:4px}.alert-success{color:#3c763d;background-color:#dff0d8;border-color:#d6e9c6}.alert-danger{color:#a94442;background-color:#f2dede;border-color:#ebccd1}.table-bordered{border:1px solid #ddd}.table{width:100%;max-width:100%;margin-bottom:20px}table{background-color:transparent;border-spacing:0;border-collapse:collapse}.table>tbody>tr.success>td,.table>tbody>tr.success>th,.table>tbody>tr>td.success,.table>tbody>tr>th.success,.table>tfoot>tr.success>td,.table>tfoot>tr.success>th,.table>tfoot>tr>td.success,.table>tfoot>tr>th.success,.table>thead>tr.success>td,.table>thead>tr.success>th,.table>thead>tr>td.success,.table>thead>tr>th.success{background-color:#dff0d8}.table>tbody>tr.danger>td,.table>tbody>tr.danger>th,.table>tbody>tr>td.danger,.table>tbody>tr>th.danger,.table>tfoot>tr.danger>td,.table>tfoot>tr.danger>th,.table>tfoot>tr>td.danger,.table>tfoot>tr>th.danger,.table>thead>tr.danger>td,.table>thead>tr.danger>th,.table>thead>tr>td.danger,.table>thead>tr>th.danger{background-color:#f2dede}.table-bordered>tbody>tr>td,.table-bordered>tbody>tr>th,.table-bordered>tfoot>tr>td,.table-bordered>tfoot>tr>th,.table-bordered>thead>tr>td,.table-bordered>thead>tr>th{border:1px solid #ddd}.table>tbody>tr>td,.table>tbody>tr>th,.table>tfoot>tr>td,.table>tfoot>tr>th,.table>thead>tr>td,.table>thead>tr>th{padding:8px;line-height:1.42857143;vertical-align:top;border-top:1px solid #ddd}
+    -->
+    </style>
     <title>Verification Result</title>
   </head>
   <body>
@@ -14,17 +18,16 @@
     <ul>
       <li>Source: {{.PathList.SourcePath}}</li>
       <li>Target: {{.PathList.TargetPath}}</li>
-    </ul><br>
+    </ul>
     <p>This result contains the following number of directories and files.</p>
     <ul>
       <li>Directories: {{.DirectoryInfo.Directories}}</li>
       <li>Files: {{.DirectoryInfo.Files}}</li>
     </ul><br>
-    <h2>Total Result
-      <div class="alert alert-{{.Result.VerifyResult | rowAttr}}">
-          <strong>{{.Result.VerifyResult | passFail}}</strong>
-      </div>
-    </h2><br>
+    <h2>Total Result</h2>
+    <div class="alert alert-{{.Result.VerifyResult | rowAttr}}">
+          <strong><font size="5">{{.Result.VerifyResult | passFail}}</font></strong>
+    </div><br>
     <h2>Details</h2>
     <table class="table table-bordered">
       <thead>
@@ -45,7 +48,5 @@
           {{end}}
         </tbody>
     </table>
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   </body>
 </html>
