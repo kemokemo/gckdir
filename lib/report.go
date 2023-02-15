@@ -9,12 +9,9 @@ import (
 // saves html file to io.Writer w.
 func CreateReport(w io.Writer, pathList PathList, result HashList) error {
 	report := template.New("report")
-	b, err := Asset("lib/templates/index.html")
-	if err != nil {
-		return err
-	}
+	b := template_index_html
 
-	report, err = report.Funcs(
+	report, err := report.Funcs(
 		template.FuncMap{
 			"passFail": passFail,
 			"rowAttr":  rowAttr,

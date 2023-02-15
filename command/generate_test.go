@@ -24,7 +24,7 @@ func TestCmdGenerate(t *testing.T) {
 		}
 	}()
 	flagFail1 := flag.FlagSet{}
-	err = flagFail1.Parse(strings.Split(fmt.Sprintf("%s", filepath.Join(dir, "TestData/Dir1")), " "))
+	err = flagFail1.Parse(strings.Split(filepath.Join(dir, "TestData/Dir1"), " "))
 	if err != nil {
 		t.Errorf("Failed to create args. %v", err)
 	}

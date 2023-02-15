@@ -3,7 +3,6 @@ package lib
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -94,7 +93,7 @@ func TestHashData(t *testing.T) {
 			return
 		}
 
-		bytes, err := ioutil.ReadFile(test.file)
+		bytes, err := os.ReadFile(test.file)
 		if err != nil {
 			t.Errorf(`ReadFile failed. %q`, err)
 			return
@@ -112,24 +111,24 @@ func TestHashData(t *testing.T) {
 
 func TestVerifyHashList(t *testing.T) {
 	master := HashList{List: []HashData{
-		HashData{RelativePath: "test.bmp", HashValue: "aaaa"},
-		HashData{RelativePath: "data", HashValue: "-"}}}
+		{RelativePath: "test.bmp", HashValue: "aaaa"},
+		{RelativePath: "data", HashValue: "-"}}}
 	same := HashList{List: []HashData{
-		HashData{RelativePath: "test.bmp", HashValue: "aaaa"},
-		HashData{RelativePath: "data", HashValue: "-"}}}
+		{RelativePath: "test.bmp", HashValue: "aaaa"},
+		{RelativePath: "data", HashValue: "-"}}}
 	otherHash := HashList{List: []HashData{
-		HashData{RelativePath: "test.bmp", HashValue: "bbbb"},
-		HashData{RelativePath: "data", HashValue: "-"}}}
+		{RelativePath: "test.bmp", HashValue: "bbbb"},
+		{RelativePath: "data", HashValue: "-"}}}
 	otherPath := HashList{List: []HashData{
-		HashData{RelativePath: "sample.txt", HashValue: "aaaa"},
-		HashData{RelativePath: "data", HashValue: "-"}}}
+		{RelativePath: "sample.txt", HashValue: "aaaa"},
+		{RelativePath: "data", HashValue: "-"}}}
 	otherDir := HashList{List: []HashData{
-		HashData{RelativePath: "test.bmp", HashValue: "aaaa"},
-		HashData{RelativePath: "hoge", HashValue: "-"}}}
+		{RelativePath: "test.bmp", HashValue: "aaaa"},
+		{RelativePath: "hoge", HashValue: "-"}}}
 	morePath := HashList{List: []HashData{
-		HashData{RelativePath: "test.bmp", HashValue: "aaaa"},
-		HashData{RelativePath: "data", HashValue: "-"},
-		HashData{RelativePath: "sample.txt", HashValue: "aaaa"}}}
+		{RelativePath: "test.bmp", HashValue: "aaaa"},
+		{RelativePath: "data", HashValue: "-"},
+		{RelativePath: "sample.txt", HashValue: "aaaa"}}}
 
 	type args struct {
 		source             HashList

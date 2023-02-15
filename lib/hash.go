@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
@@ -146,7 +145,7 @@ func generateHash(path string) (string, error) {
 func readHashList(source string) (HashList, error) {
 	list := HashList{}
 	source = filepath.Clean(source)
-	data, err := ioutil.ReadFile(source)
+	data, err := os.ReadFile(source)
 	if err != nil {
 		return list, err
 	}
@@ -167,7 +166,7 @@ func VerifyHashList(source, target HashList, doHashCheck, doUnnecessaryCheck boo
 		return result.List[i].RelativePath < result.List[j].RelativePath
 	})
 	result.VerifyResult = linq.From(result.List).All(func(arg1 interface{}) bool {
-		return arg1.(HashData).VerifyResult == true
+		return arg1.(HashData).VerifyResult
 	})
 	return result
 }

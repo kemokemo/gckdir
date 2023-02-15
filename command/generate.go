@@ -3,7 +3,6 @@ package command
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -44,7 +43,7 @@ func CmdGenerate(c *cli.Context) error {
 			ExitCodeFunctionError)
 	}
 
-	err = ioutil.WriteFile(target, data, os.ModePerm)
+	err = os.WriteFile(target, data, os.ModePerm)
 	if err != nil {
 		return cli.NewExitError(
 			fmt.Sprintf("Failed to write hash list. %v\n%s", err, help),
