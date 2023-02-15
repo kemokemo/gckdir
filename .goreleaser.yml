@@ -1,28 +1,53 @@
-# Build customization
-git:
-  short_hash: true
+project_name: gckdir
 builds:
-  - main: ./
+  - main: .
     binary: gckdir
+    # refer to the https://pkg.go.dev/cmd/link
+    ldflags:
+      - -s -w -X main.Revision={{.ShortCommit}}
     goos:
-      - windows
       - darwin
       - linux
+      - windows
       - freebsd
     goarch:
+      - '386'
       - amd64
-# Archive customization
-archive:
-  format: tar.gz
-  format_overrides:
-    - goos: windows
-      format: zip
-  replacements:
-    amd64: 64bit
-    windows: Windows
-    darwin: macOS
-    linux: Linux
-    freebsd: FreeBSD
-  files:
-    - LICENSE
-    - README.md
+      - arm64
+changelog:
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+archives:
+  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - README.md
+      - LICENSE
+release:
+  prerelease: auto
+brews:
+  - tap:
+      owner: kemokemo
+      name: homebrew-tap
+    homepage: "https://github.com/kemokemo/gckdir"
+    description: "A tool to generate a hash list of specified directory and comapare it with the target directory."
+    install: |
+      bin.install "gckdir"
+scoop:
+  bucket:
+    owner: kemokemo
+    name: scoop-bucket
+  homepage:  https://github.com/kemokemo/gckdir
+  description: A tool to generate a hash list of specified directory and comapare it with the target directory.
+  license: MIT
